@@ -5,6 +5,8 @@ from sklearn.svm import LinearSVR
 
 from VideoProcessing.localbinarypatterns import LocalBinaryPatterns
 from VideoProcessing.frameextraction import FrameExtraction
+from VideoProcessing.featureextraction import FeatureExtraction
+
 
 def test_accuracy(model, lData, rData, videoName, videosInfo):
     lframe = lData[0]
@@ -31,6 +33,55 @@ def test_accuracy(model, lData, rData, videoName, videosInfo):
 
     print(videosInfo['openness'][videoName])
 
+def temp_loader(facesData, videoLabels):
+    # loading the haarcascade XML files to detect facial features
+    # face_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_frontalface_default.xml')
+    left_eye_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_lefteye_2splits.xml')
+    right_eye_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_righteye_2splits.xml')
+    smile_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_smile.xml')
+
+    markedfacesData = []
+    leftEyeData = []
+    smileData = []
+    rightEyeData = []
+    # videoLabels = []
+    smileVideoLabels = []
+    rightEyeVideoLabels = []
+    leftEyeVideoLabels = []
+    loopbreak = False
+
+    for face, videoName in zip(facesData, videoLabels):
+        grayFace = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+        # # detecting both left and right
+        leftEye = left_eye_cascade.detectMultiScale(grayFace)  # Detecting left eye
+        rightEye = right_eye_cascade.detectMultiScale(grayFace)  # Detecting right eye
+        smile = smile_cascade.detectMultiScale(grayFace)
+
+        for (ex, ey, ew, eh) in leftEye:
+            cv2.rectangle(face, (ex, ey), (ex + ew, ey + eh), (0, 0, 255), 2)
+            leftEyeFrame = face[ey:ey + eh, ex:ex + ew]
+            leftEyeData.append(leftEyeFrame)
+            leftEyeVideoLabels.append(videoName)
+            break
+        for (ex, ey, ew, eh) in rightEye:
+            cv2.rectangle(face, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
+            rightEyeFrame = face[ey:ey + eh, ex:ex + ew]
+            rightEyeData.append(rightEyeFrame)
+            rightEyeVideoLabels.append(videoName)
+            break
+        for (sx, sy, sw, sh) in smile:
+            cv2.rectangle(face, (sx, sy), (sx + sw, sy + sh), (255, 0, 0), 2)
+            smileFrame = face[sy:sy + sh, sx:sx + sw]
+            smileData.append(smileFrame)
+            smileVideoLabels.append(videoName)
+            break
+
+        markedfacesData.append(face)
+        # videoLabels.append(videoName)
+
+    # return facesData, leftEyeData, rightEyeData, smileData, videoLabels, smileVideoLabels
+    return markedfacesData, leftEyeData, rightEyeData, smileData, leftEyeVideoLabels, rightEyeVideoLabels, smileVideoLabels
+
 
 # Defining Variables
 
@@ -45,110 +96,176 @@ videosData = pickle.load(videosDataFile, encoding='latin1')
 print('Getting names of all the video files.')
 videoNames = list(videosData['extraversion'].keys())
 
-
-frameExtractor  = FrameExtraction(30, 200, videoNames, videosFilePath)
+# frameExtractor = FrameExtraction(1000, 200, videoNames, videosFilePath)
 
 print("Starting frame extraction")
-facesData, leftEyeData, rightEyeData, smileData, videoLabels = frameExtractor.extract()
+# facesData, leftEyeData, rightEyeData, smileData, videoLabels, smileVideoLabels = frameExtractor.extract()
 
-LBPConvertor = LocalBinaryPatterns(24, 8)
 
-opennessLabels = []
-extraversionLabels = []
-neuroticismLabels = []
-agreeablenessLabels = []
-conscientiousnessLabels = []
+facesPickle = open("ModelStorage/faces.pickle", "rb")
+videoLabelPickle = open("ModelStorage/videolabel.pickle", "rb")
+markedfacesPickle = open("ModelStorage/markedfaces.pickle", "rb")
+lefteyePickle = open("ModelStorage/lefteye.pickle", "rb")
+righteyePickle = open("ModelStorage/righteye.pickle", "rb")
+smilePickle = open("ModelStorage/smile.pickle", "rb")
+smileVideoLabelPickle = open("ModelStorage/smilevideolabel.pickle", "rb")
+leftEyeVideoLabelPickle = open("ModelStorage/lefteyevideolabel.pickle", "rb")
+rightEyeVideoLabelPickle = open("ModelStorage/righteyevideolabel.pickle", "rb")
+
+featuresDictPickle = open('ModelStorage/features.pickle', "rb")
+lablesDictPickle = open("ModelStorage/labels.pickle", "rb")
+
+print("loading data")
+
+# facesData = pickle.load(facesPickle)
+# videoLabels = pickle.load(videoLabelPickle)
+# smileData = pickle.load(smilePickle)
+# rightEyeData = pickle.load(righteyePickle)
+# leftEyeData = pickle.load(lefteyePickle)
+# smileLabels = pickle.load(smileVideoLabelPickle)
+# rightEyeLabels = pickle.load(rightEyeVideoLabelPickle)
+# leftEyeLabels = pickle.load(leftEyeVideoLabelPickle)
+featuresDict = pickle.load(featuresDictPickle)
+labelsDict = pickle.load(lablesDictPickle)
+
+print("done loading data")
+
+featureExtractor = FeatureExtraction(24, 8)
+
+# print("Extracting features")
+# featuresDict = featureExtractor.extract(facesData, smileData, leftEyeData, rightEyeData)
 #
-eyesValues = []
-faceValues = []
-smileValues = []
+# print("Extracting labels")
+# labelsDict = featureExtractor.make_feature_matrix(videosData, videoLabels, smileLabels, leftEyeLabels, rightEyeLabels)
 
-# print("Starting to print faces")
-# print(len(facesData))
-for r, l, x, y, z in zip(rightEyeData, leftEyeData, facesData, smileData, videoLabels):
+print(len(featuresDict))
+print(len(labelsDict))
 
-     extraversionLabels.append(videosData['extraversion'][z])
-     neuroticismLabels.append(videosData['neuroticism'][z])
-     conscientiousnessLabels.append(videosData['conscientiousness'][z])
-     opennessLabels.append(videosData['openness'][z])
-     agreeablenessLabels.append(videosData['agreeableness'][z])
+print(len(featuresDict['face']))
+print(len(labelsDict['face']))
 
-     #convert both left and right images to greyscale
-     grayRight = cv2.cvtColor(r, cv2.COLOR_BGR2GRAY)
-     grayLeft = cv2.cvtColor(l, cv2.COLOR_BGR2GRAY)
-     grayFace = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
-     graySmile = cv2.cvtColor(y, cv2.COLOR_BGR2GRAY)
+# pickle.dump(featuresDict, featuresDictPickle)
+# pickle.dump(labelsDict, lablesDictPickle)
 
-     #generate Local binary patterns for both left and right eye images
-     histRight = LBPConvertor.describe(grayRight)
-     histLeft = LBPConvertor.describe(grayLeft)
-     histFace = LBPConvertor.describe(grayFace)
-     histSmile = LBPConvertor.describe(graySmile)
-
-     #normalize the value of histogram
-     histBoth = histLeft + histRight
-     eps = 1e-7
-     histBoth /= (histBoth.sum() + eps)
-
-     eyesValues.append(histBoth)
-     faceValues.append(histFace)
-     smileValues.append(histSmile)
-
-
-neuroticismModelEyes = LinearSVR(random_state=0)
-neuroticismModelFace = LinearSVR(random_state=0)
-neuroticismModelSmile = LinearSVR(random_state=0)
-
-extraversionModelEyes = LinearSVR(random_state=0)
-extraversionModelFace = LinearSVR(random_state=0)
-extraversionModelSmile = LinearSVR(random_state=0)
-
-conscientiousnessModelEyes = LinearSVR(random_state=0)
-conscientiousnessModelFace = LinearSVR(random_state=0)
-conscientiousnessModelSmile = LinearSVR(random_state=0)
-
-agreeablenessModelEyes = LinearSVR(random_state=0)
-agreeablenessModelFace = LinearSVR(random_state=0)
-agreeablenessModelSmile = LinearSVR(random_state=0)
-
-opennessModelEyes = LinearSVR(random_state=0)
-opennessModelFace = LinearSVR(random_state=0)
-opennessModelSmile = LinearSVR(random_state=0)
-
-neuroticismModelEyes.fit(eyesValues, neuroticismLabels)
-neuroticismModelFace.fit(faceValues, neuroticismLabels)
-neuroticismModelSmile.fit(smileValues, neuroticismLabels)
-
-agreeablenessModelEyes.fit(eyesValues, agreeablenessLabels)
-agreeablenessModelFace.fit(faceValues, agreeablenessLabels)
-agreeablenessModelSmile.fit(smileValues, agreeablenessLabels)
-
-opennessModelEyes.fit(eyesValues, opennessLabels)
-opennessModelFace.fit(faceValues, opennessLabels)
-opennessModelSmile.fit(smileValues, opennessLabels)
-
-extraversionModelEyes.fit(eyesValues, extraversionLabels)
-extraversionModelFace.fit(faceValues, extraversionLabels)
-extraversionModelSmile.fit(smileValues, extraversionLabels)
-
-conscientiousnessModelEyes.fit(eyesValues, conscientiousnessLabels)
-conscientiousnessModelFace.fit(faceValues, conscientiousnessLabels)
-conscientiousnessModelSmile.fit(smileValues, conscientiousnessLabels)
-
-
-test_accuracy(opennessModelFace, rightEyeData, leftEyeData, videoLabels[0], videosData)
-
-
+# markedfacesData, leftEyeData, rightEyeData, smileData, leftEyeVideoLabels, rightEyeVideoLabels, smileVideoLabels = temp_loader(
+#     facesData, videoLabels)
+# leftEyeData = pickle.load(lefteyePickle)
+# rightEyeData = pickle.load(righteyePickle)
+# smileData = pickle.load(smilePickle)
 #
-# testImage = rightEyeData[0]
+# smileVideoLabels = pickle.load(smileVideoLabelPickle)
+
+
+# print("printing data")
+# print(videoLabels)
+# print(smileVideoLabels)
 #
-# gray = cv2.cvtColor(testImage, cv2.COLOR_BGR2GRAY)
+# for face in facesData:
+#     cv2.imshow("Faces", face)
+#     cv2.waitKey(0)
+# pickle.dump(markedfacesData, markedfacesPickle)
+# pickle.dump(leftEyeData, lefteyePickle)
+# pickle.dump(rightEyeData, righteyePickle)
+# pickle.dump(smileData, smilePickle)
+# pickle.dump(smileVideoLabels, smileVideoLabelPickle)
+# pickle.dump(leftEyeVideoLabels, leftEyeVideoLabelPickle)
+# pickle.dump(rightEyeVideoLabels, rightEyeVideoLabelPickle)
+
+# LBPConvertor = LocalBinaryPatterns(24, 8)
 #
-# hist1 = LBPConvertor.describe(gray)
+# opennessLabels = []
+# extraversionLabels = []
+# neuroticismLabels = []
+# agreeablenessLabels = []
+# conscientiousnessLabels = []
+# #
+# eyesValues = []
+# faceValues = []
+# smileValues = []
 #
-# prediction = []
-# prediction.append(hist1)
-# print(neuroticismModel.predict(prediction))
-# print(videosData['neuroticism'][videoNames[0]])
+# # print("Starting to print faces")
+# # print(len(facesData))
+# for r, l, x, y, z in zip(rightEyeData, leftEyeData, facesData, smileData, videoLabels):
+#     extraversionLabels.append(videosData['extraversion'][z])
+#     neuroticismLabels.append(videosData['neuroticism'][z])
+#     conscientiousnessLabels.append(videosData['conscientiousness'][z])
+#     opennessLabels.append(videosData['openness'][z])
+#     agreeablenessLabels.append(videosData['agreeableness'][z])
 #
-# cv2.destroyAllWindows()
+#     # convert both left and right images to greyscale
+#     grayRight = cv2.cvtColor(r, cv2.COLOR_BGR2GRAY)
+#     grayLeft = cv2.cvtColor(l, cv2.COLOR_BGR2GRAY)
+#     grayFace = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
+#     graySmile = cv2.cvtColor(y, cv2.COLOR_BGR2GRAY)
+#
+#     # generate Local binary patterns for both left and right eye images
+#     histRight = LBPConvertor.describe(grayRight)
+#     histLeft = LBPConvertor.describe(grayLeft)
+#     histFace = LBPConvertor.describe(grayFace)
+#     histSmile = LBPConvertor.describe(graySmile)
+#
+#     # normalize the value of histogram
+#     histBoth = histLeft + histRight
+#     eps = 1e-7
+#     histBoth /= (histBoth.sum() + eps)
+#
+#     eyesValues.append(histBoth)
+#     faceValues.append(histFace)
+#     smileValues.append(histSmile)
+#
+# neuroticismModelEyes = LinearSVR(random_state=0)
+# neuroticismModelFace = LinearSVR(random_state=0)
+# neuroticismModelSmile = LinearSVR(random_state=0)
+#
+# extraversionModelEyes = LinearSVR(random_state=0)
+# extraversionModelFace = LinearSVR(random_state=0)
+# extraversionModelSmile = LinearSVR(random_state=0)
+#
+# conscientiousnessModelEyes = LinearSVR(random_state=0)
+# conscientiousnessModelFace = LinearSVR(random_state=0)
+# conscientiousnessModelSmile = LinearSVR(random_state=0)
+#
+# agreeablenessModelEyes = LinearSVR(random_state=0)
+# agreeablenessModelFace = LinearSVR(random_state=0)
+# agreeablenessModelSmile = LinearSVR(random_state=0)
+#
+# opennessModelEyes = LinearSVR(random_state=0)
+# opennessModelFace = LinearSVR(random_state=0)
+# opennessModelSmile = LinearSVR(random_state=0)
+#
+# neuroticismModelEyes.fit(eyesValues, neuroticismLabels)
+# neuroticismModelFace.fit(faceValues, neuroticismLabels)
+# neuroticismModelSmile.fit(smileValues, neuroticismLabels)
+#
+# agreeablenessModelEyes.fit(eyesValues, agreeablenessLabels)
+# agreeablenessModelFace.fit(faceValues, agreeablenessLabels)
+# agreeablenessModelSmile.fit(smileValues, agreeablenessLabels)
+#
+# opennessModelEyes.fit(eyesValues, opennessLabels)
+# opennessModelFace.fit(faceValues, opennessLabels)
+# opennessModelSmile.fit(smileValues, opennessLabels)
+#
+# extraversionModelEyes.fit(eyesValues, extraversionLabels)
+# extraversionModelFace.fit(faceValues, extraversionLabels)
+# extraversionModelSmile.fit(smileValues, extraversionLabels)
+#
+# conscientiousnessModelEyes.fit(eyesValues, conscientiousnessLabels)
+# conscientiousnessModelFace.fit(faceValues, conscientiousnessLabels)
+# conscientiousnessModelSmile.fit(smileValues, conscientiousnessLabels)
+#
+# test_accuracy(opennessModelFace, rightEyeData, leftEyeData, videoLabels[0], videosData)
+#
+#
+# #
+# # testImage = rightEyeData[0]
+# #
+# # gray = cv2.cvtColor(testImage, cv2.COLOR_BGR2GRAY)
+# #
+# # hist1 = LBPConvertor.describe(gray)
+# #
+# # prediction = []
+# # prediction.append(hist1)
+# # print(neuroticismModel.predict(prediction))
+# # print(videosData['neuroticism'][videoNames[0]])
+# #
+# # cv2.destroyAllWindows()

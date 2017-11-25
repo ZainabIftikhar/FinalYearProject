@@ -1,5 +1,6 @@
 import cv2
 
+
 class FrameExtraction:
     def __init__(self, videoCount, interval, videoNames, folderPath):
         self.videoCount = videoCount
@@ -8,18 +9,18 @@ class FrameExtraction:
         self.folderPath = folderPath
 
     def extract(self):
-        #loading the haarcascade XML files to detect facial features
+        # loading the haarcascade XML files to detect facial features
         face_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_frontalface_default.xml')
-        eye_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_eye.xml')
-        left_eye_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_lefteye_2splits.xml')
-        right_eye_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_righteye_2splits.xml')
-        smile_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_smile.xml')
+        # left_eye_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_lefteye_2splits.xml')
+        # right_eye_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_righteye_2splits.xml')
+        # smile_cascade = cv2.CascadeClassifier('HaarCascadeFiles/haarcascade_smile.xml')
 
         facesData = []
-        leftEyeData = []
-        smileData = []
-        rightEyeData = []
-        videoLabels = []
+        # leftEyeData = []
+        # smileData = []
+        # rightEyeData = []
+        # videoLabels = []
+        # smileVideoLabels = []
         loopbreak = False
         videosLoaded = 0
         print(len(self.videoNames))
@@ -29,7 +30,7 @@ class FrameExtraction:
                 break
 
             # calculating the path of the file to load next
-            #videoName = list(labelDictionary.keys())[i]
+            # videoName = list(labelDictionary.keys())[i]
 
             # Loading the video
             capVideo = cv2.VideoCapture(self.folderPath + videoName)
@@ -38,18 +39,18 @@ class FrameExtraction:
 
             if capVideo.isOpened():
                 videosLoaded += 1
-                print('Processing video with filename: {}'.format(videoName))
+                print('Processing video no: {} with filename: {}'.format(videosLoaded, videoName))
                 if videosLoaded == self.videoCount:
                     loopbreak = True
             else:
                 print('Video with filename: {} not found.'.format(videoName))
             while capVideo.isOpened():
 
-                #setting the time of the video to next frame
+                # setting the time of the video to next frame
                 if capVideo.set(cv2.CAP_PROP_POS_MSEC, framePosition):
                     # print("condition met")
 
-                    #adding 100ms to next frame position
+                    # adding 100ms to next frame position
                     framePosition += self.interval
 
                     # getting frames from the video
@@ -59,7 +60,7 @@ class FrameExtraction:
                         break
                     else:
                         height, width, layers = frame.shape
-                        frame = cv2.resize(frame, (int(width/2), int(height/2)))
+                        frame = cv2.resize(frame, (int(width / 4), int(height / 4)))
                         grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
                         # Detecting the face
@@ -67,38 +68,39 @@ class FrameExtraction:
 
                         for (x, y, w, h) in faces:
 
-                            #cropping both original frame and the gray frame
+                            # cropping both original frame and the gray frame
                             croppedFace = frame[y:y + h, x:x + h]
-                            croppedFaceGray = grayFrame[y:y + h, x:x + w]
-
-                            #detecting both left and right
-                            leftEye = left_eye_cascade.detectMultiScale(croppedFaceGray)  # Detecting left eye
-                            rightEye = right_eye_cascade.detectMultiScale(croppedFaceGray)  # Detecting right eye
-                            smile = smile_cascade.detectMultiScale(croppedFaceGray)
-
-                            for (ex, ey, ew, eh) in leftEye:
-                                cv2.rectangle(croppedFace, (ex, ey), (ex + ew, ey + eh), (0, 0, 255), 2)
-                                leftEyeFrame = croppedFace[ey:ey + eh, ex:ex + ew]
-                                leftEyeData.append(leftEyeFrame)
-                                break
-                            for (ex, ey, ew, eh) in rightEye:
-                                cv2.rectangle(croppedFace, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
-                                rightEyeFrame = croppedFace[ey:ey + eh, ex:ex + ew]
-                                rightEyeData.append(rightEyeFrame)
-                                break
-                            for (sx, sy, sw, sh) in smile:
-                                cv2.rectangle(croppedFace, (sx, sy), (sx + sw, sy + sh), (255, 0, 0), 2)
-                                smileFrame = croppedFace[sy:sy + sh, sx:sx + sw]
-                                smileData.append(smileFrame)
-                                break
+                            # croppedFaceGray = grayFrame[y:y + h, x:x + w]
+                            #
+                            # # detecting both left and right
+                            # leftEye = left_eye_cascade.detectMultiScale(croppedFaceGray)  # Detecting left eye
+                            # rightEye = right_eye_cascade.detectMultiScale(croppedFaceGray)  # Detecting right eye
+                            # smile = smile_cascade.detectMultiScale(croppedFaceGray)
+                            #
+                            # for (ex, ey, ew, eh) in leftEye:
+                            #     cv2.rectangle(croppedFace, (ex, ey), (ex + ew, ey + eh), (0, 0, 255), 2)
+                            #     leftEyeFrame = croppedFace[ey:ey + eh, ex:ex + ew]
+                            #     leftEyeData.append(leftEyeFrame)
+                            #     break
+                            # for (ex, ey, ew, eh) in rightEye:
+                            #     cv2.rectangle(croppedFace, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
+                            #     rightEyeFrame = croppedFace[ey:ey + eh, ex:ex + ew]
+                            #     rightEyeData.append(rightEyeFrame)
+                            #     break
+                            # for (sx, sy, sw, sh) in smile:
+                            #     cv2.rectangle(croppedFace, (sx, sy), (sx + sw, sy + sh), (255, 0, 0), 2)
+                            #     smileFrame = croppedFace[sy:sy + sh, sx:sx + sw]
+                            #     smileData.append(smileFrame)
+                            #     smileVideoLabels.append(videoName)
+                            #     break
 
                             facesData.append(croppedFace)
-                            videoLabels.append(videoName)
+                            # videoLabels.append(videoName)
                             break
                 else:
-                    #video reaches its end
+                    # video reaches its end
                     capVideo.release()
                     break
 
-        return facesData, leftEyeData, rightEyeData, smileData, videoLabels
-
+        # return facesData, leftEyeData, rightEyeData, smileData, videoLabels, smileVideoLabels
+        return facesData
