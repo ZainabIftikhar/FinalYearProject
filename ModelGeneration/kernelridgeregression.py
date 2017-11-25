@@ -3,105 +3,105 @@ from collections import defaultdict
 import pickle
 
 import numpy as np
-import xlsxwriter as xlsxwriter
-from sklearn.svm import LinearSVR
+import xlsxwriter
+from sklearn.kernel_ridge import KernelRidge
 
 from VideoProcessing.featureextraction import FeatureExtraction
 from VideoProcessing.frameextraction import FrameExtraction
 
 
-class LinearSVMModel:
+class KernelRidgeModel:
     def __init__(self, featuresDict=None, labelsDict=None):
         self.featuresDict = featuresDict
         self.labelsDict = labelsDict
 
     def generate(self):
-        neuroticismModelRightEye = LinearSVR(random_state=0)
-        neuroticismModelLeftEye = LinearSVR(random_state=0)
-        neuroticismModelFace = LinearSVR(random_state=0)
-        neuroticismModelSmile = LinearSVR(random_state=0)
-
-        extraversionModelRightEye = LinearSVR(random_state=0)
-        extraversionModelLeftEye = LinearSVR(random_state=0)
-        extraversionModelFace = LinearSVR(random_state=0)
-        extraversionModelSmile = LinearSVR(random_state=0)
-
-        conscientiousnessModelRightEye = LinearSVR(random_state=0)
-        conscientiousnessModelLeftEye = LinearSVR(random_state=0)
-        conscientiousnessModelFace = LinearSVR(random_state=0)
-        conscientiousnessModelSmile = LinearSVR(random_state=0)
-
-        agreeablenessModelRightEye = LinearSVR(random_state=0)
-        agreeablenessModelLeftEye = LinearSVR(random_state=0)
-        agreeablenessModelFace = LinearSVR(random_state=0)
-        agreeablenessModelSmile = LinearSVR(random_state=0)
-
-        opennessModelRightEye = LinearSVR(random_state=0)
-        opennessModelLeftEye = LinearSVR(random_state=0)
-        opennessModelFace = LinearSVR(random_state=0)
-        opennessModelSmile = LinearSVR(random_state=0)
+        neuroticismModelRightEye = KernelRidge(kernel='rbf', alpha=0.1, gamma=0.1)
+        # neuroticismModelLeftEye = KernelRidge(alpha=1.0)
+        # neuroticismModelFace = KernelRidge(alpha=1.0)
+        # neuroticismModelSmile = KernelRidge(alpha=1.0)
+        #
+        # extraversionModelRightEye = KernelRidge(alpha=1.0)
+        # extraversionModelLeftEye = KernelRidge(alpha=1.0)
+        # extraversionModelFace = KernelRidge(alpha=1.0)
+        # extraversionModelSmile = KernelRidge(alpha=1.0)
+        #
+        # conscientiousnessModelRightEye = KernelRidge(alpha=1.0)
+        # conscientiousnessModelLeftEye = KernelRidge(alpha=1.0)
+        # conscientiousnessModelFace = KernelRidge(alpha=1.0)
+        # conscientiousnessModelSmile = KernelRidge(alpha=1.0)
+        #
+        # agreeablenessModelRightEye = KernelRidge(alpha=1.0)
+        # agreeablenessModelLeftEye = KernelRidge(alpha=1.0)
+        # agreeablenessModelFace = KernelRidge(alpha=1.0)
+        # agreeablenessModelSmile = KernelRidge(alpha=1.0)
+        #
+        # opennessModelRightEye = KernelRidge(alpha=1.0)
+        # opennessModelLeftEye = KernelRidge(alpha=1.0)
+        # opennessModelFace = KernelRidge(alpha=1.0)
+        # opennessModelSmile = KernelRidge(alpha=1.0)
 
         neuroticismModelRightEye.fit(self.featuresDict['righteye'], self.labelsDict['righteye']['neuroticism'])
-        neuroticismModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['neuroticism'])
-        neuroticismModelFace.fit(self.featuresDict['face'], self.labelsDict['face']['neuroticism'])
-        neuroticismModelSmile.fit(self.featuresDict['smile'], self.labelsDict['smile']['neuroticism'])
+        # neuroticismModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['neuroticism'])
+        # neuroticismModelFace.fit(self.featuresDict['face'], self.labelsDict['face']['neuroticism'])
+        # neuroticismModelSmile.fit(self.featuresDict['smile'], self.labelsDict['smile']['neuroticism'])
+        #
+        # opennessModelRightEye.fit(self.featuresDict['righteye'], self.labelsDict['righteye']['openness'])
+        # opennessModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['openness'])
+        # opennessModelFace.fit(self.featuresDict['face'], self.labelsDict['face']['openness'])
+        # opennessModelSmile.fit(self.featuresDict['smile'], self.labelsDict['smile']['openness'])
+        #
+        # agreeablenessModelRightEye.fit(self.featuresDict['righteye'], self.labelsDict['righteye']['agreeableness'])
+        # agreeablenessModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['agreeableness'])
+        # agreeablenessModelFace.fit(self.featuresDict['face'], self.labelsDict['face']['agreeableness'])
+        # agreeablenessModelSmile.fit(self.featuresDict['smile'], self.labelsDict['smile']['agreeableness'])
+        #
+        # extraversionModelRightEye.fit(self.featuresDict['righteye'], self.labelsDict['righteye']['extraversion'])
+        # extraversionModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['extraversion'])
+        # extraversionModelFace.fit(self.featuresDict['face'], self.labelsDict['face']['extraversion'])
+        # extraversionModelSmile.fit(self.featuresDict['smile'], self.labelsDict['smile']['extraversion'])
+        #
+        # conscientiousnessModelRightEye.fit(self.featuresDict['righteye'],
+        #                                    self.labelsDict['righteye']['conscientiousness'])
+        # conscientiousnessModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['conscientiousness'])
+        # conscientiousnessModelFace.fit(self.featuresDict['face'], self.labelsDict['face']['conscientiousness'])
+        # conscientiousnessModelSmile.fit(self.featuresDict['smile'], self.labelsDict['smile']['conscientiousness'])
 
-        opennessModelRightEye.fit(self.featuresDict['righteye'], self.labelsDict['righteye']['openness'])
-        opennessModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['openness'])
-        opennessModelFace.fit(self.featuresDict['face'], self.labelsDict['face']['openness'])
-        opennessModelSmile.fit(self.featuresDict['smile'], self.labelsDict['smile']['openness'])
+        KernelModelDict = defaultdict(dict)
 
-        agreeablenessModelRightEye.fit(self.featuresDict['righteye'], self.labelsDict['righteye']['agreeableness'])
-        agreeablenessModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['agreeableness'])
-        agreeablenessModelFace.fit(self.featuresDict['face'], self.labelsDict['face']['agreeableness'])
-        agreeablenessModelSmile.fit(self.featuresDict['smile'], self.labelsDict['smile']['agreeableness'])
+        # KernelModelDict['face']['openness'] = opennessModelFace
+        # KernelModelDict['face']['agreeableness'] = agreeablenessModelFace
+        # KernelModelDict['face']['extraversion'] = extraversionModelFace
+        # KernelModelDict['face']['conscientiousness'] = conscientiousnessModelFace
+        # KernelModelDict['face']['neuroticism'] = neuroticismModelFace
+        #
+        # KernelModelDict['smile']['openness'] = opennessModelSmile
+        # KernelModelDict['smile']['agreeableness'] = agreeablenessModelSmile
+        # KernelModelDict['smile']['extraversion'] = extraversionModelSmile
+        # KernelModelDict['smile']['conscientiousness'] = conscientiousnessModelSmile
+        # KernelModelDict['smile']['neuroticism'] = neuroticismModelSmile
+        #
+        # KernelModelDict['righteye']['openness'] = opennessModelRightEye
+        # KernelModelDict['righteye']['agreeableness'] = agreeablenessModelRightEye
+        # KernelModelDict['righteye']['extraversion'] = extraversionModelRightEye
+        # KernelModelDict['righteye']['conscientiousness'] = conscientiousnessModelRightEye
+        # KernelModelDict['righteye']['neuroticism'] = neuroticismModelRightEye
+        #
+        # KernelModelDict['lefteye']['openness'] = opennessModelLeftEye
+        # KernelModelDict['lefteye']['agreeableness'] = agreeablenessModelLeftEye
+        # KernelModelDict['lefteye']['extraversion'] = extraversionModelLeftEye
+        # KernelModelDict['lefteye']['conscientiousness'] = conscientiousnessModelLeftEye
+        # KernelModelDict['lefteye']['neuroticism'] = neuroticismModelLeftEye
+        #
+        # self.modelDict = KernelModelDict
+        return KernelModelDict
 
-        extraversionModelRightEye.fit(self.featuresDict['righteye'], self.labelsDict['righteye']['extraversion'])
-        extraversionModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['extraversion'])
-        extraversionModelFace.fit(self.featuresDict['face'], self.labelsDict['face']['extraversion'])
-        extraversionModelSmile.fit(self.featuresDict['smile'], self.labelsDict['smile']['extraversion'])
-
-        conscientiousnessModelRightEye.fit(self.featuresDict['righteye'],
-                                           self.labelsDict['righteye']['conscientiousness'])
-        conscientiousnessModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['conscientiousness'])
-        conscientiousnessModelFace.fit(self.featuresDict['face'], self.labelsDict['face']['conscientiousness'])
-        conscientiousnessModelSmile.fit(self.featuresDict['smile'], self.labelsDict['smile']['conscientiousness'])
-
-        SVMModelDict = defaultdict(dict)
-
-        SVMModelDict['face']['openness'] = opennessModelFace
-        SVMModelDict['face']['agreeableness'] = agreeablenessModelFace
-        SVMModelDict['face']['extraversion'] = extraversionModelFace
-        SVMModelDict['face']['conscientiousness'] = conscientiousnessModelFace
-        SVMModelDict['face']['neuroticism'] = neuroticismModelFace
-
-        SVMModelDict['smile']['openness'] = opennessModelSmile
-        SVMModelDict['smile']['agreeableness'] = agreeablenessModelSmile
-        SVMModelDict['smile']['extraversion'] = extraversionModelSmile
-        SVMModelDict['smile']['conscientiousness'] = conscientiousnessModelSmile
-        SVMModelDict['smile']['neuroticism'] = neuroticismModelSmile
-
-        SVMModelDict['righteye']['openness'] = opennessModelRightEye
-        SVMModelDict['righteye']['agreeableness'] = agreeablenessModelRightEye
-        SVMModelDict['righteye']['extraversion'] = extraversionModelRightEye
-        SVMModelDict['righteye']['conscientiousness'] = conscientiousnessModelRightEye
-        SVMModelDict['righteye']['neuroticism'] = neuroticismModelRightEye
-
-        SVMModelDict['lefteye']['openness'] = opennessModelLeftEye
-        SVMModelDict['lefteye']['agreeableness'] = agreeablenessModelLeftEye
-        SVMModelDict['lefteye']['extraversion'] = extraversionModelLeftEye
-        SVMModelDict['lefteye']['conscientiousness'] = conscientiousnessModelLeftEye
-        SVMModelDict['lefteye']['neuroticism'] = neuroticismModelLeftEye
-
-        self.modelDict = SVMModelDict
-        return SVMModelDict
-
-    def test(self, model=None, videoCount = 1):
+    def test(self, model=None, videoCount=1):
 
         if model is not None:
             self.modelDict = model
 
-        workbook = xlsxwriter.Workbook('linearsvm.xlsx')
+        workbook = xlsxwriter.Workbook('ridgeregression.xlsx')
 
         worksheet = workbook.add_worksheet()
 
@@ -159,7 +159,6 @@ class LinearSVMModel:
 
         frameExtractor = FrameExtraction(1, 200, videoNames, videosFilePath)
 
-
         for i, videoName in enumerate(videoNames):
 
             facesData, smileData, leftEyeData, rightEyeData = frameExtractor.extract_single(videoName)
@@ -179,15 +178,18 @@ class LinearSVMModel:
                 opennessListRightEye = self.modelDict['righteye']['openness'].predict(featuresDict['righteye'])
                 extraversionListRightEye = self.modelDict['righteye']['extraversion'].predict(featuresDict['righteye'])
                 neuroticismListRightEye = self.modelDict['righteye']['neuroticism'].predict(featuresDict['righteye'])
-                agreeablenessListRightEye = self.modelDict['righteye']['agreeableness'].predict(featuresDict['righteye'])
-                conscientiousnessListRightEye = self.modelDict['righteye']['conscientiousness'].predict(featuresDict['righteye'])
+                agreeablenessListRightEye = self.modelDict['righteye']['agreeableness'].predict(
+                    featuresDict['righteye'])
+                conscientiousnessListRightEye = self.modelDict['righteye']['conscientiousness'].predict(
+                    featuresDict['righteye'])
 
             if featuresDict['lefteye']:
                 opennessListLeftEye = self.modelDict['lefteye']['openness'].predict(featuresDict['lefteye'])
                 extraversionListLeftEye = self.modelDict['lefteye']['extraversion'].predict(featuresDict['lefteye'])
                 neuroticismListLeftEye = self.modelDict['lefteye']['neuroticism'].predict(featuresDict['lefteye'])
                 agreeablenessListLeftEye = self.modelDict['lefteye']['agreeableness'].predict(featuresDict['lefteye'])
-                conscientiousnessListLeftEye = self.modelDict['lefteye']['conscientiousness'].predict(featuresDict['lefteye'])
+                conscientiousnessListLeftEye = self.modelDict['lefteye']['conscientiousness'].predict(
+                    featuresDict['lefteye'])
 
             if featuresDict['smile']:
                 opennessListSmile = self.modelDict['smile']['openness'].predict(featuresDict['smile'])
@@ -196,17 +198,17 @@ class LinearSVMModel:
                 agreeablenessListSmile = self.modelDict['smile']['agreeableness'].predict(featuresDict['smile'])
                 conscientiousnessListSmile = self.modelDict['smile']['conscientiousness'].predict(featuresDict['smile'])
 
-
             tempList = np.concatenate((opennessListFace, opennessListLeftEye, opennessListRightEye, opennessListSmile))
 
-            worksheet.write(i+1, 0, videosData['openness'][videoName])
-            worksheet.write(i+1, 1, sum(opennessListFace)/len(opennessListFace))
-            worksheet.write(i+1, 2, sum(opennessListLeftEye)/len(opennessListLeftEye))
-            worksheet.write(i+1, 3, sum(opennessListRightEye)/len(opennessListRightEye))
-            worksheet.write(i+1, 4, sum(opennessListSmile)/len(opennessListSmile))
-            worksheet.write(i+1, 5, sum(tempList)/len(tempList))
+            worksheet.write(i + 1, 0, videosData['openness'][videoName])
+            worksheet.write(i + 1, 1, sum(opennessListFace) / len(opennessListFace))
+            worksheet.write(i + 1, 2, sum(opennessListLeftEye) / len(opennessListLeftEye))
+            worksheet.write(i + 1, 3, sum(opennessListRightEye) / len(opennessListRightEye))
+            worksheet.write(i + 1, 4, sum(opennessListSmile) / len(opennessListSmile))
+            worksheet.write(i + 1, 5, sum(tempList) / len(tempList))
 
-            tempList = np.concatenate((extraversionListFace, extraversionListLeftEye, extraversionListRightEye, extraversionListSmile))
+            tempList = np.concatenate(
+                (extraversionListFace, extraversionListLeftEye, extraversionListRightEye, extraversionListSmile))
 
             worksheet.write(i + 1, 6, videosData['extraversion'][videoName])
             worksheet.write(i + 1, 7, sum(extraversionListFace) / len(extraversionListFace))
@@ -215,7 +217,8 @@ class LinearSVMModel:
             worksheet.write(i + 1, 10, sum(extraversionListSmile) / len(extraversionListSmile))
             worksheet.write(i + 1, 11, sum(tempList) / len(tempList))
 
-            tempList = np.concatenate((neuroticismListFace,neuroticismListLeftEye,neuroticismListRightEye,neuroticismListSmile))
+            tempList = np.concatenate(
+                (neuroticismListFace, neuroticismListLeftEye, neuroticismListRightEye, neuroticismListSmile))
 
             worksheet.write(i + 1, 12, videosData['neuroticism'][videoName])
             worksheet.write(i + 1, 13, sum(neuroticismListFace) / len(neuroticismListFace))
@@ -224,7 +227,8 @@ class LinearSVMModel:
             worksheet.write(i + 1, 16, sum(neuroticismListSmile) / len(neuroticismListSmile))
             worksheet.write(i + 1, 17, sum(tempList) / len(tempList))
 
-            tempList = np.concatenate((agreeablenessListFace, agreeablenessListLeftEye, agreeablenessListRightEye,agreeablenessListSmile))
+            tempList = np.concatenate(
+                (agreeablenessListFace, agreeablenessListLeftEye, agreeablenessListRightEye, agreeablenessListSmile))
 
             worksheet.write(i + 1, 18, videosData['agreeableness'][videoName])
             worksheet.write(i + 1, 19, sum(agreeablenessListFace) / len(agreeablenessListFace))
@@ -233,7 +237,8 @@ class LinearSVMModel:
             worksheet.write(i + 1, 22, sum(agreeablenessListSmile) / len(agreeablenessListSmile))
             worksheet.write(i + 1, 23, sum(tempList) / len(tempList))
 
-            tempList = np.concatenate((conscientiousnessListFace, conscientiousnessListLeftEye, conscientiousnessListRightEye, conscientiousnessListSmile))
+            tempList = np.concatenate((conscientiousnessListFace, conscientiousnessListLeftEye,
+                                       conscientiousnessListRightEye, conscientiousnessListSmile))
 
             worksheet.write(i + 1, 24, videosData['conscientiousness'][videoName])
             worksheet.write(i + 1, 25, sum(conscientiousnessListFace) / len(conscientiousnessListFace))
@@ -242,6 +247,6 @@ class LinearSVMModel:
             worksheet.write(i + 1, 28, sum(conscientiousnessListSmile) / len(conscientiousnessListSmile))
             worksheet.write(i + 1, 29, sum(tempList) / len(tempList))
 
-            if i is videoCount-1:
+            if i is videoCount - 1:
                 break
         workbook.close()

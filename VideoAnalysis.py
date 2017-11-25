@@ -6,6 +6,8 @@ from sklearn.svm import LinearSVR
 from VideoProcessing.localbinarypatterns import LocalBinaryPatterns
 from VideoProcessing.frameextraction import FrameExtraction
 from VideoProcessing.featureextraction import FeatureExtraction
+from ModelGeneration.linearsvmmodel import LinearSVMModel
+from ModelGeneration.kernelridgeregression import KernelRidgeModel
 
 
 def test_accuracy(model, lData, rData, videoName, videosInfo):
@@ -102,18 +104,22 @@ print("Starting frame extraction")
 # facesData, leftEyeData, rightEyeData, smileData, videoLabels, smileVideoLabels = frameExtractor.extract()
 
 
-facesPickle = open("ModelStorage/faces.pickle", "rb")
-videoLabelPickle = open("ModelStorage/videolabel.pickle", "rb")
-markedfacesPickle = open("ModelStorage/markedfaces.pickle", "rb")
-lefteyePickle = open("ModelStorage/lefteye.pickle", "rb")
-righteyePickle = open("ModelStorage/righteye.pickle", "rb")
-smilePickle = open("ModelStorage/smile.pickle", "rb")
-smileVideoLabelPickle = open("ModelStorage/smilevideolabel.pickle", "rb")
-leftEyeVideoLabelPickle = open("ModelStorage/lefteyevideolabel.pickle", "rb")
-rightEyeVideoLabelPickle = open("ModelStorage/righteyevideolabel.pickle", "rb")
+# facesPickle = open("ModelStorage/faces.pickle", "rb")
+# videoLabelPickle = open("ModelStorage/videolabel.pickle", "rb")
+# markedfacesPickle = open("ModelStorage/markedfaces.pickle", "rb")
+# lefteyePickle = open("ModelStorage/lefteye.pickle", "rb")
+# righteyePickle = open("ModelStorage/righteye.pickle", "rb")
+# smilePickle = open("ModelStorage/smile.pickle", "rb")
+# smileVideoLabelPickle = open("ModelStorage/smilevideolabel.pickle", "rb")
+# leftEyeVideoLabelPickle = open("ModelStorage/lefteyevideolabel.pickle", "rb")
+# rightEyeVideoLabelPickle = open("ModelStorage/righteyevideolabel.pickle", "rb")
 
 featuresDictPickle = open('ModelStorage/features.pickle', "rb")
 lablesDictPickle = open("ModelStorage/labels.pickle", "rb")
+#
+# SVMModelDictPickle = open("ModelStorage/svmmodel.pickle", "rb")
+
+KernelRidgeDictPickle = open("ModelStorage/kernelridge.pickle", "wb")
 
 print("loading data")
 
@@ -125,12 +131,13 @@ print("loading data")
 # smileLabels = pickle.load(smileVideoLabelPickle)
 # rightEyeLabels = pickle.load(rightEyeVideoLabelPickle)
 # leftEyeLabels = pickle.load(leftEyeVideoLabelPickle)
+
 featuresDict = pickle.load(featuresDictPickle)
 labelsDict = pickle.load(lablesDictPickle)
 
 print("done loading data")
 
-featureExtractor = FeatureExtraction(24, 8)
+#featureExtractor = FeatureExtraction(24, 8)
 
 # print("Extracting features")
 # featuresDict = featureExtractor.extract(facesData, smileData, leftEyeData, rightEyeData)
@@ -143,6 +150,25 @@ print(len(labelsDict))
 
 print(len(featuresDict['face']))
 print(len(labelsDict['face']))
+
+
+# print("Starting to train model")
+# SVMModel = LinearSVMModel(featuresDict, labelsDict)
+#
+# SVMModelDict = SVMModel.generate()
+
+# SVMModelDict = pickle.load(SVMModelDictPickle)
+#
+# SVMModel = LinearSVMModel()
+#
+# SVMModel.test(SVMModelDict, 100)
+
+#
+KernelModel = KernelRidgeModel(featuresDict, labelsDict)
+
+KernelRidgeModelDict = KernelModel.generate()
+#
+# pickle.dump(KernelRidgeModelDict, KernelRidgeDictPickle)
 
 # pickle.dump(featuresDict, featuresDictPickle)
 # pickle.dump(labelsDict, lablesDictPickle)
