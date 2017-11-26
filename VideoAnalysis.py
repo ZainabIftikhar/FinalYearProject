@@ -8,6 +8,7 @@ from VideoProcessing.frameextraction import FrameExtraction
 from VideoProcessing.featureextraction import FeatureExtraction
 from ModelGeneration.linearsvmmodel import LinearSVMModel
 from ModelGeneration.kernelridgeregression import KernelRidgeModel
+from ModelGeneration.svmrbfmodel import RBFSVMModel
 
 
 def test_accuracy(model, lData, rData, videoName, videosInfo):
@@ -118,8 +119,10 @@ featuresDictPickle = open('ModelStorage/features.pickle', "rb")
 lablesDictPickle = open("ModelStorage/labels.pickle", "rb")
 #
 # SVMModelDictPickle = open("ModelStorage/svmmodel.pickle", "rb")
+#
+# KernelRidgeDictPickle = open("ModelStorage/kernelridge.pickle", "wb")
 
-KernelRidgeDictPickle = open("ModelStorage/kernelridge.pickle", "wb")
+rbfSVMPickle = open("ModelStorage/rbfsvm.pickle", "rb")
 
 print("loading data")
 
@@ -164,11 +167,22 @@ print(len(labelsDict['face']))
 # SVMModel.test(SVMModelDict, 100)
 
 #
-KernelModel = KernelRidgeModel(featuresDict, labelsDict)
-
-KernelRidgeModelDict = KernelModel.generate()
+# KernelModel = KernelRidgeModel(featuresDict, labelsDict)
 #
-# pickle.dump(KernelRidgeModelDict, KernelRidgeDictPickle)
+# KernelRidgeModelDict = KernelModel.generate()
+
+rbfmodel = RBFSVMModel()
+
+rbfModelDict = pickle.load(rbfSVMPickle)
+
+print(rbfModelDict)
+
+rbfmodel.test(rbfModelDict, 100)
+
+
+#pickle.dump(rbfModelDict, rbfSVMPickle)
+
+#pickle.dump(KernelRidgeModelDict, KernelRidgeDictPickle)
 
 # pickle.dump(featuresDict, featuresDictPickle)
 # pickle.dump(labelsDict, lablesDictPickle)
