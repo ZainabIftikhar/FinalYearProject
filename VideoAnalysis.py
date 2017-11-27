@@ -9,7 +9,7 @@ from VideoProcessing.featureextraction import FeatureExtraction
 from ModelGeneration.linearsvmmodel import LinearSVMModel
 from ModelGeneration.kernelridgeregression import KernelRidgeModel
 from ModelGeneration.svmrbfmodel import RBFSVMModel
-
+from ModelGeneration.neuralnetworkmodel import NeuralNetworkModel
 
 def test_accuracy(model, lData, rData, videoName, videosInfo):
     lframe = lData[0]
@@ -122,7 +122,9 @@ lablesDictPickle = open("ModelStorage/labels.pickle", "rb")
 #
 # KernelRidgeDictPickle = open("ModelStorage/kernelridge.pickle", "wb")
 
-rbfSVMPickle = open("ModelStorage/rbfsvm.pickle", "rb")
+# rbfSVMPickle = open("ModelStorage/rbfsvm.pickle", "rb")
+
+nnadamPickle = open("ModelStorage/nnadam.pickle", "wb")
 
 print("loading data")
 
@@ -171,14 +173,19 @@ print(len(labelsDict['face']))
 #
 # KernelRidgeModelDict = KernelModel.generate()
 
-rbfmodel = RBFSVMModel()
+# rbfmodel = RBFSVMModel()
+#
+# rbfModelDict = pickle.load(rbfSVMPickle)
+#
+# print(rbfModelDict)
+#
+# rbfmodel.test(rbfModelDict, 100)
 
-rbfModelDict = pickle.load(rbfSVMPickle)
+nnModel = NeuralNetworkModel(featuresDict, labelsDict)
 
-print(rbfModelDict)
+nnModelDict = nnModel.generate()
 
-rbfmodel.test(rbfModelDict, 100)
-
+pickle.dump(nnadamPickle, nnModelDict)
 
 #pickle.dump(rbfModelDict, rbfSVMPickle)
 
