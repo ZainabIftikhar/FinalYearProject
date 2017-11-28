@@ -16,30 +16,30 @@ class NeuralNetworkModel:
         self.labelsDict = labelsDict
 
     def generate(self):
-        neuroticismModelRightEye = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        neuroticismModelLeftEye = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        neuroticismModelFace = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        neuroticismModelSmile = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
+        neuroticismModelRightEye = MLPRegressor(hidden_layer_sizes=(10,))
+        neuroticismModelLeftEye = MLPRegressor(hidden_layer_sizes=(10,))
+        neuroticismModelFace = MLPRegressor(hidden_layer_sizes=(10,))
+        neuroticismModelSmile = MLPRegressor(hidden_layer_sizes=(10,))
 
-        extraversionModelRightEye = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        extraversionModelLeftEye = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        extraversionModelFace = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        extraversionModelSmile = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
+        extraversionModelRightEye = MLPRegressor(hidden_layer_sizes=(10,))
+        extraversionModelLeftEye = MLPRegressor(hidden_layer_sizes=(10,))
+        extraversionModelFace = MLPRegressor(hidden_layer_sizes=(10,))
+        extraversionModelSmile = MLPRegressor(hidden_layer_sizes=(10,))
 
-        conscientiousnessModelRightEye = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        conscientiousnessModelLeftEye = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        conscientiousnessModelFace = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        conscientiousnessModelSmile = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
+        conscientiousnessModelRightEye = MLPRegressor(hidden_layer_sizes=(10,))
+        conscientiousnessModelLeftEye = MLPRegressor(hidden_layer_sizes=(10,))
+        conscientiousnessModelFace = MLPRegressor(hidden_layer_sizes=(10,))
+        conscientiousnessModelSmile = MLPRegressor(hidden_layer_sizes=(10,))
 
-        agreeablenessModelRightEye = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        agreeablenessModelLeftEye = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        agreeablenessModelFace = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        agreeablenessModelSmile = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
+        agreeablenessModelRightEye = MLPRegressor(hidden_layer_sizes=(10,))
+        agreeablenessModelLeftEye = MLPRegressor(hidden_layer_sizes=(10,))
+        agreeablenessModelFace = MLPRegressor(hidden_layer_sizes=(10,))
+        agreeablenessModelSmile = MLPRegressor(hidden_layer_sizes=(10,))
 
-        opennessModelRightEye = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        opennessModelLeftEye = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        opennessModelFace = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
-        opennessModelSmile = MLPRegressor(hidden_layer_sizes=(10,), activation='adam')
+        opennessModelRightEye = MLPRegressor(hidden_layer_sizes=(10,))
+        opennessModelLeftEye = MLPRegressor(hidden_layer_sizes=(10,))
+        opennessModelFace = MLPRegressor(hidden_layer_sizes=(10,))
+        opennessModelSmile = MLPRegressor(hidden_layer_sizes=(10,))
 
         neuroticismModelRightEye.fit(self.featuresDict['righteye'], self.labelsDict['righteye']['neuroticism'])
         neuroticismModelLeftEye.fit(self.featuresDict['lefteye'], self.labelsDict['lefteye']['neuroticism'])
@@ -160,6 +160,8 @@ class NeuralNetworkModel:
 
         for i, videoName in enumerate(videoNames):
 
+            print("Video number: {}".format(i + 1))
+
             facesData, smileData, leftEyeData, rightEyeData = frameExtractor.extract_single(videoName)
 
             featureExtractor = FeatureExtraction(24, 8)
@@ -249,3 +251,108 @@ class NeuralNetworkModel:
             if i is videoCount - 1:
                 break
         workbook.close()
+
+    def predict_single_frame(self, frame, model=None):
+        if model is not None:
+            self.modelDict = model
+
+        print("Trying to predict a single frame value")
+
+        neuroticismListFace = []
+        neuroticismListLeftEye = []
+        neuroticismListRightEye = []
+        agreeablenessListFace = []
+        agreeablenessListLeftEye = []
+        neuroticismListSmile = []
+        agreeablenessListSmile = []
+        agreeablenessListRightEye = []
+        conscientiousnessListFace = []
+        conscientiousnessListLeftEye = []
+        conscientiousnessListRightEye = []
+        conscientiousnessListSmile = []
+        extraversionListFace = []
+        extraversionListLeftEye = []
+        extraversionListRightEye = []
+        extraversionListSmile = []
+        opennessListFace = []
+        opennessListLeftEye = []
+        opennessListRightEye = []
+        opennessListSmile = []
+
+        extractor = FrameExtraction()
+        features = FeatureExtraction(24, 8)
+
+        croppedFace, smileFrame, leftEyeFrame, rightEyeFrame = extractor.single_frame(frame)
+        featuresDict = features.extract_single_frame(croppedFace, smileFrame, leftEyeFrame, rightEyeFrame)
+
+        if featuresDict['face']:
+            opennessListFace = self.modelDict['face']['openness'].predict(featuresDict['face'])
+            extraversionListFace = self.modelDict['face']['extraversion'].predict(featuresDict['face'])
+            neuroticismListFace = self.modelDict['face']['neuroticism'].predict(featuresDict['face'])
+            agreeablenessListFace = self.modelDict['face']['agreeableness'].predict(featuresDict['face'])
+            conscientiousnessListFace = self.modelDict['face']['conscientiousness'].predict(featuresDict['face'])
+
+        if featuresDict['righteye']:
+            opennessListRightEye = self.modelDict['righteye']['openness'].predict(featuresDict['righteye'])
+            extraversionListRightEye = self.modelDict['righteye']['extraversion'].predict(featuresDict['righteye'])
+            neuroticismListRightEye = self.modelDict['righteye']['neuroticism'].predict(featuresDict['righteye'])
+            agreeablenessListRightEye = self.modelDict['righteye']['agreeableness'].predict(
+                featuresDict['righteye'])
+            conscientiousnessListRightEye = self.modelDict['righteye']['conscientiousness'].predict(
+                featuresDict['righteye'])
+
+        if featuresDict['lefteye']:
+            opennessListLeftEye = self.modelDict['lefteye']['openness'].predict(featuresDict['lefteye'])
+            extraversionListLeftEye = self.modelDict['lefteye']['extraversion'].predict(featuresDict['lefteye'])
+            neuroticismListLeftEye = self.modelDict['lefteye']['neuroticism'].predict(featuresDict['lefteye'])
+            agreeablenessListLeftEye = self.modelDict['lefteye']['agreeableness'].predict(featuresDict['lefteye'])
+            conscientiousnessListLeftEye = self.modelDict['lefteye']['conscientiousness'].predict(
+                featuresDict['lefteye'])
+
+        if featuresDict['smile']:
+            opennessListSmile = self.modelDict['smile']['openness'].predict(featuresDict['smile'])
+            extraversionListSmile = self.modelDict['smile']['extraversion'].predict(featuresDict['smile'])
+            neuroticismListSmile = self.modelDict['smile']['neuroticism'].predict(featuresDict['smile'])
+            agreeablenessListSmile = self.modelDict['smile']['agreeableness'].predict(featuresDict['smile'])
+            conscientiousnessListSmile = self.modelDict['smile']['conscientiousness'].predict(featuresDict['smile'])
+
+
+        openness = -1
+        extraversion = -1
+        neuroticism = -1
+        conscientiousness = -1
+        agreeableness = -1
+
+        opennessList = None
+        agreeablenessList = None
+        conscientiousnessList = None
+        extraversionList = None
+        neuroticismList = None
+
+        if opennessListFace and opennessListRightEye and opennessListLeftEye and opennessListSmile:
+            opennessList = np.concatenate(
+                (opennessListFace, opennessListLeftEye, opennessListRightEye, opennessListSmile))
+            openness = sum(opennessList) / len(opennessList)
+
+        if extraversionListFace or extraversionListLeftEye or extraversionListRightEye or extraversionListSmile:
+            extraversionList = np.concatenate(
+                (extraversionListFace, extraversionListLeftEye, extraversionListRightEye, extraversionListSmile))
+            extraversion = sum(extraversionList) / len(extraversionList)
+
+        if neuroticismListFace or neuroticismListLeftEye or neuroticismListRightEye or neuroticismListSmile:
+            neuroticismList = np.concatenate(
+                (neuroticismListFace, neuroticismListLeftEye, neuroticismListRightEye, neuroticismListSmile))
+            neuroticism = sum(neuroticismList) / len(neuroticismList)
+
+        if agreeablenessListFace or agreeablenessListLeftEye or agreeablenessListRightEye or agreeablenessListLeftEye or agreeablenessListSmile:
+            agreeablenessList = np.concatenate(
+                (agreeablenessListFace, agreeablenessListLeftEye, agreeablenessListRightEye, agreeablenessListSmile))
+            agreeableness = sum(agreeablenessList) / len(agreeablenessList)
+
+        if conscientiousnessListFace or conscientiousnessListLeftEye or conscientiousnessListRightEye or conscientiousnessListSmile:
+            conscientiousnessList = np.concatenate((conscientiousnessListFace, conscientiousnessListLeftEye,
+                                                    conscientiousnessListRightEye, conscientiousnessListSmile))
+            conscientiousness = sum(conscientiousnessList) / len(conscientiousnessList)
+
+
+        return openness, extraversion, neuroticism , agreeableness, conscientiousness

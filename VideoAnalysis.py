@@ -10,6 +10,7 @@ from ModelGeneration.linearsvmmodel import LinearSVMModel
 from ModelGeneration.kernelridgeregression import KernelRidgeModel
 from ModelGeneration.svmrbfmodel import RBFSVMModel
 from ModelGeneration.neuralnetworkmodel import NeuralNetworkModel
+from ModelGeneration.modeltester import ModeTester
 
 def test_accuracy(model, lData, rData, videoName, videosInfo):
     lframe = lData[0]
@@ -118,13 +119,13 @@ print("Starting frame extraction")
 featuresDictPickle = open('ModelStorage/features.pickle', "rb")
 lablesDictPickle = open("ModelStorage/labels.pickle", "rb")
 #
-# SVMModelDictPickle = open("ModelStorage/svmmodel.pickle", "rb")
+#SVMModelDictPickle = open("ModelStorage/svmmodel.pickle", "rb")
 #
 # KernelRidgeDictPickle = open("ModelStorage/kernelridge.pickle", "wb")
 
-# rbfSVMPickle = open("ModelStorage/rbfsvm.pickle", "rb")
+rbfSVMPickle = open("ModelStorage/rbfsvm.pickle", "rb")
 
-nnadamPickle = open("ModelStorage/nnadam.pickle", "wb")
+# nnadamPickle = open("ModelStorage/nnadam.pickle", "rb")
 
 print("loading data")
 
@@ -181,11 +182,16 @@ print(len(labelsDict['face']))
 #
 # rbfmodel.test(rbfModelDict, 100)
 
-nnModel = NeuralNetworkModel(featuresDict, labelsDict)
 
-nnModelDict = nnModel.generate()
+ModelDict = pickle.load(rbfSVMPickle)
 
-pickle.dump(nnadamPickle, nnModelDict)
+Modeltester = ModeTester(ModelDict)
+
+Modeltester.test(100)
+
+# nnModelDict = nnModel.generate()
+#
+# pickle.dump(nnModelDict, nnadamPickle)
 
 #pickle.dump(rbfModelDict, rbfSVMPickle)
 

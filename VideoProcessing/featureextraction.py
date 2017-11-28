@@ -134,3 +134,36 @@ class FeatureExtraction:
         labelsDict['lefteye']['agreeableness'] = agreeablenessLeftEyeLabels
 
         return labelsDict
+
+    def extract_single_frame(self, face, smile, leftEye, rightEye):
+
+        LBPGenerator = LocalBinaryPatterns(self.points, self.radius)
+
+        faceHist = []
+        smileHist = []
+        rightEyeHist = []
+        leftEyeHist = []
+        if face is not None:
+            grayface = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+            faceHist.append(LBPGenerator.describe(grayface))
+
+        if smile is not None:
+            graySmile = cv2.cvtColor(smile, cv2.COLOR_BGR2GRAY)
+            smileHist.append(LBPGenerator.describe(graySmile))
+
+        if rightEye is not None:
+            grayRightEye = cv2.cvtColor(rightEye, cv2.COLOR_BGR2GRAY)
+            rightEyeHist.append(LBPGenerator.describe(grayRightEye))
+
+        if leftEye is not None:
+            grayLeftEye = cv2.cvtColor(leftEye, cv2.COLOR_BGR2GRAY)
+            leftEyeHist.append(LBPGenerator.describe(grayLeftEye))
+
+        featuresDict = defaultdict(dict)
+
+        featuresDict['face'] = faceHist
+        featuresDict['smile'] = smileHist
+        featuresDict['righteye'] = rightEyeHist
+        featuresDict['lefteye'] = leftEyeHist
+
+        return featuresDict
