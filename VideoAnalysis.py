@@ -123,10 +123,11 @@ print("Starting frame extraction")
 #
 # KernelRidgeDictPickle = open("ModelStorage/kernelridge.pickle", "wb")
 
-facesPickle = open("ModelStorage/faces(2000).pickle", "wb")
+facesPickle = open("ModelStorage/faces2.pickle", "wb")
+facesLabelsPickle = open("ModelStorage/facelabels2.pickle", "wb")
 
-
-rbfSVMPickle = open("ModelStorage/rbfsvm.pickle", "rb")
+#
+# rbfSVMPickle = open("ModelStorage/rbfsvm.pickle", "rb")
 
 # nnadamPickle = open("ModelStorage/nnadam.pickle", "rb")
 
@@ -144,7 +145,14 @@ print("loading data")
 # featuresDict = pickle.load(featuresDictPickle)
 # labelsDict = pickle.load(lablesDictPickle)
 
+frameExtractor = FrameExtraction(2, 200, videoNames, videosFilePath)
+
+faces, facelables = frameExtractor.extract(1000)
+
 print("done loading data")
+
+pickle.dump(faces, facesPickle)
+pickle.dump(facelables, facesLabelsPickle)
 
 #featureExtractor = FeatureExtraction(24, 8)
 
@@ -154,11 +162,11 @@ print("done loading data")
 # print("Extracting labels")
 # labelsDict = featureExtractor.make_feature_matrix(videosData, videoLabels, smileLabels, leftEyeLabels, rightEyeLabels)
 
-print(len(featuresDict))
-print(len(labelsDict))
-
-print(len(featuresDict['face']))
-print(len(labelsDict['face']))
+# print(len(featuresDict))
+# print(len(labelsDict))
+#
+# print(len(featuresDict['face']))
+# print(len(labelsDict['face']))
 
 
 # print("Starting to train model")
@@ -186,11 +194,11 @@ print(len(labelsDict['face']))
 # rbfmodel.test(rbfModelDict, 100)
 
 
-ModelDict = pickle.load(rbfSVMPickle)
-
-Modeltester = ModeTester(ModelDict)
-
-Modeltester.test(200)
+# ModelDict = pickle.load(rbfSVMPickle)
+#
+# Modeltester = ModeTester(ModelDict)
+#
+# Modeltester.test(200)
 
 # nnModelDict = nnModel.generate()
 #
