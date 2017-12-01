@@ -33,7 +33,7 @@ class ModeTester:
         opennessListRightEye = []
         opennessListSmile = []
 
-        workbook = xlsxwriter.Workbook('rbfsvm_train.xlsx')
+        workbook = xlsxwriter.Workbook('rbfsvm.xlsx')
 
         worksheet = workbook.add_worksheet()
 
@@ -57,14 +57,14 @@ class ModeTester:
         worksheet.write('N1', 'Conscientiousness (C)', bold)
         worksheet.write('O1', 'Error', bold)
 
-        videosDataFile = open("AnnotationFiles/annotation_training.pkl", "rb")
+        videosDataFile = open("AnnotationFiles/annotation_test.pkl", "rb")
         print('Loading data from pickle file.')
         videosData = pickle.load(videosDataFile, encoding='latin1')
 
         print('Getting names of all the video files.')
         videoNames = list(videosData['extraversion'].keys())
 
-        videosFilePath = 'TrainingVideos/'
+        videosFilePath = 'TestVideos/'
 
         frameExtractor = FrameExtraction(1, videoInterval, videoNames, videosFilePath)
 

@@ -106,9 +106,9 @@ print("Starting frame extraction")
 # facesData, leftEyeData, rightEyeData, smileData, videoLabels, smileVideoLabels = frameExtractor.extract()
 
 
-# facesPickle = open("ModelStorage/faces.pickle", "rb")
+# facesPickle = open("ModelStorage/faces(1000).pickle", "rb")
 # videoLabelPickle = open("ModelStorage/videolabel.pickle", "rb")
-# markedfacesPickle = open("ModelStorage/markedfaces.pickle", "rb")
+# markedfacesPickle = open("ModelStorage/markedfaces(1000).pickle", "rb")
 # lefteyePickle = open("ModelStorage/lefteye.pickle", "rb")
 # righteyePickle = open("ModelStorage/righteye.pickle", "rb")
 # smilePickle = open("ModelStorage/smile.pickle", "rb")
@@ -116,12 +116,15 @@ print("Starting frame extraction")
 # leftEyeVideoLabelPickle = open("ModelStorage/lefteyevideolabel.pickle", "rb")
 # rightEyeVideoLabelPickle = open("ModelStorage/righteyevideolabel.pickle", "rb")
 
-featuresDictPickle = open('ModelStorage/features.pickle', "rb")
-lablesDictPickle = open("ModelStorage/labels.pickle", "rb")
+# featuresDictPickle = open('ModelStorage/features.pickle', "rb")
+# lablesDictPickle = open("ModelStorage/facelabels(1000).pickle", "rb")
 #
 #SVMModelDictPickle = open("ModelStorage/svmmodel.pickle", "rb")
 #
 # KernelRidgeDictPickle = open("ModelStorage/kernelridge.pickle", "wb")
+
+facesPickle = open("ModelStorage/faces(2000).pickle", "wb")
+
 
 rbfSVMPickle = open("ModelStorage/rbfsvm.pickle", "rb")
 
@@ -138,8 +141,8 @@ print("loading data")
 # rightEyeLabels = pickle.load(rightEyeVideoLabelPickle)
 # leftEyeLabels = pickle.load(leftEyeVideoLabelPickle)
 
-featuresDict = pickle.load(featuresDictPickle)
-labelsDict = pickle.load(lablesDictPickle)
+# featuresDict = pickle.load(featuresDictPickle)
+# labelsDict = pickle.load(lablesDictPickle)
 
 print("done loading data")
 
@@ -187,7 +190,7 @@ ModelDict = pickle.load(rbfSVMPickle)
 
 Modeltester = ModeTester(ModelDict)
 
-Modeltester.test(100)
+Modeltester.test(200)
 
 # nnModelDict = nnModel.generate()
 #
