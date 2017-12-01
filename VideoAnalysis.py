@@ -145,7 +145,7 @@ print("loading data")
 # featuresDict = pickle.load(featuresDictPickle)
 # labelsDict = pickle.load(lablesDictPickle)
 
-frameExtractor = FrameExtraction(2, 200, videoNames, videosFilePath)
+frameExtractor = FrameExtraction(1000, 200, videoNames, videosFilePath)
 
 faces, facelables = frameExtractor.extract(1000)
 

@@ -75,7 +75,7 @@ class FrameExtraction:
 
                                 # cropping both original frame and the gray frame
                                 croppedFace = frame[y:y + h, x:x + h]
-                                croppedFaceGray = grayFrame[y:y + h, x:x + w]
+                                # croppedFaceGray = grayFrame[y:y + h, x:x + w]
 
                                 # # detecting both left and right
                                 # leftEye = left_eye_cascade.detectMultiScale(croppedFaceGray)  # Detecting left eye
