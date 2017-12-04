@@ -90,10 +90,10 @@ def temp_loader(facesData, videoLabels):
 # Defining Variables
 
 # folder where the training videos are kept
-videosFilePath = 'TrainingVideos/'
+videosFilePath = 'ValidationVideos/'
 
 # loading the data of the training files
-videosDataFile = open("AnnotationFiles/annotation_training.pkl", "rb")
+videosDataFile = open("AnnotationFiles/annotation_validation.pkl", "rb")
 print('Loading data from pickle file.')
 videosData = pickle.load(videosDataFile, encoding='latin1')
 
@@ -123,8 +123,8 @@ print("Starting frame extraction")
 #
 # KernelRidgeDictPickle = open("ModelStorage/kernelridge.pickle", "wb")
 
-facesPickle = open("ModelStorage/faces2.pickle", "wb")
-facesLabelsPickle = open("ModelStorage/facelabels2.pickle", "wb")
+facesPickle = open("ModelStorage/faces_val2.pickle", "wb")
+facesLabelsPickle = open("ModelStorage/facelabels_val2.pickle", "wb")
 
 #
 # rbfSVMPickle = open("ModelStorage/rbfsvm.pickle", "rb")
