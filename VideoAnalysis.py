@@ -104,12 +104,12 @@ videosData = pickle.load(videosDataFile, encoding='latin1')
 
 print('Getting names of all the video files.')
 videoNames = list(videosData['extraversion'].keys())
-
-faceFileNames = ['faces2.pickle', 'faces3.pickle', 'faces4.pickle', 'faces5.pickle', 'faces6.pickle',
-                 'faces_test1.pickle', 'faces_test2.pickle', 'faces_val1.pickle', 'faces_val2.pickle']
-faceLabelFileNames = ['facelabels2.pickle', 'facelabels3.pickle', 'facelabels4.pickle', 'facelabels5.pickle',
-                      'facelabels6.pickle', 'facelabels_test1.pickle', 'facelabels_test2.pickle',
-                      'facelabels_val1.pickle', 'facelabels_val2.pickle']
+#
+# faceFileNames = ['faces2.pickle', 'faces3.pickle', 'faces4.pickle', 'faces5.pickle', 'faces6.pickle',
+#                  'faces_test1.pickle', 'faces_test2.pickle', 'faces_val1.pickle', 'faces_val2.pickle']
+# faceLabelFileNames = ['facelabels2.pickle', 'facelabels3.pickle', 'facelabels4.pickle', 'facelabels5.pickle',
+#                       'facelabels6.pickle', 'facelabels_test1.pickle', 'facelabels_test2.pickle',
+#                       'facelabels_val1.pickle', 'facelabels_val2.pickle']
 # frameExtractor = FrameExtraction(1000, 200, videoNames, videosFilePath)
 
 print("Starting frame extraction")
@@ -164,48 +164,66 @@ print("done loading data")
 # pickle.dump(faces, facesPickle)
 # pickle.dump(facelables, facesLabelsPickle)
 
-folderLocation = 'ModelStorage/'
-lefteye = 'lefteye_'
-righteye = 'righteye_'
-smile = 'smile_'
-label = 'label_'
-for facefile, facelabelfile in zip(faceFileNames, faceLabelFileNames):
-    facePickle = open(folderLocation + facefile, "rb")
-    print("Face file {} openend".format(facefile))
+# folderLocation = 'ModelStorage/'
+# lefteye = 'lefteye_'
+# righteye = 'righteye_'
+# smile = 'smile_'
+# label = 'label_'
+# for facefile, facelabelfile in zip(faceFileNames, faceLabelFileNames):
+#     facePickle = open(folderLocation + facefile, "rb")
+#     print("Face file {} openend".format(facefile))
+#
+#     facesData = pickle.load(facePickle)
+#
+#     facelabelPickle = open(folderLocation + facelabelfile, 'rb')
+#     print("Face label file {} opened".format(facelabelfile))
+#
+#     faceLabels = pickle.load(facelabelPickle)
+#
+#     lefteyePickle = open(folderLocation + lefteye + facefile, "wb")
+#     lefteyelabelPickle = open(folderLocation + lefteye + label + facefile, "wb")
+#
+#     righteyePickle = open(folderLocation + righteye + facefile, "wb")
+#     righteyelabelPickle = open(folderLocation + righteye + label + facefile, "wb")
+#
+#     smilePickle = open(folderLocation + smile + facefile, "wb")
+#     smilelabelPickle = open(folderLocation + smile + label + facefile, "wb")
+#
+#     print("Calling function for filename: {}".format(facefile))
+#
+#     leftEyeData, rightEyeData, smileData, leftEyeVideoLabels, rightEyeVideoLabels, smileVideoLabels = temp_loader(facesData, faceLabels)
+#
+#     pickle.dump(leftEyeData, lefteyePickle)
+#     pickle.dump(leftEyeVideoLabels, lefteyelabelPickle)
+#
+#     pickle.dump(rightEyeData, righteyePickle)
+#     pickle.dump(rightEyeVideoLabels, righteyelabelPickle)
+#
+#     pickle.dump(smileData, smilePickle)
+#     pickle.dump(smileVideoLabels, smilelabelPickle)
 
-    facesData = pickle.load(facePickle)
-
-    facelabelPickle = open(folderLocation + facelabelfile, 'rb')
-    print("Face label file {} opened".format(facelabelfile))
-
-    faceLabels = pickle.load(facelabelPickle)
-
-    lefteyePickle = open(folderLocation + lefteye + facefile, "wb")
-    lefteyelabelPickle = open(folderLocation + lefteye + label + facefile, "wb")
-
-    righteyePickle = open(folderLocation + righteye + facefile, "wb")
-    righteyelabelPickle = open(folderLocation + righteye + label + facefile, "wb")
-
-    smilePickle = open(folderLocation + smile + facefile, "wb")
-    smilelabelPickle = open(folderLocation + smile + label + facefile, "wb")
-
-    print("Calling function for filename: {}".format(facefile))
-
-    leftEyeData, rightEyeData, smileData, leftEyeVideoLabels, rightEyeVideoLabels, smileVideoLabels = temp_loader(facesData, faceLabels)
-
-    pickle.dump(leftEyeData, lefteyePickle)
-    pickle.dump(leftEyeVideoLabels, lefteyelabelPickle)
-
-    pickle.dump(rightEyeData, righteyePickle)
-    pickle.dump(rightEyeVideoLabels, righteyelabelPickle)
-
-    pickle.dump(smileData, smilePickle)
-    pickle.dump(smileVideoLabels, smilelabelPickle)
-
-# featureExtractor = FeatureExtraction(24, 8)
+featureExtractor = FeatureExtraction(24, 8)
 
 # print("Extracting features")
-# featuresDict = featureExtractor.extract(facesData, smileData, leftEyeData, rightEyeData)
+featuresDictTrain, featuresDictTest, featuresDictVal = featureExtractor.extract_all()
+
+
+trainFeaturesPickle = open("ModelStorage/features_dict_train.pickle", "wb")
+
+testFeaturesPickle = open("ModelStorage/features_dict_test.pickle", "wb")
+
+valFeaturesPickle = open("ModelStorage/features_dict_val.pickle", "wb")
+
+print(len(featuresDictTrain))
+print(len(featuresDictTrain['hist']))
+print(len(featuresDictTest))
+print(len(featuresDictTest['hist']))
+print(len(featuresDictVal))
+print(len(featuresDictVal['hist']))
+
+pickle.dump(featuresDictTrain, trainFeaturesPickle)
+pickle.dump(featuresDictTest, testFeaturesPickle)
+pickle.dump(featuresDictVal, valFeaturesPickle)
 #
 # print("Extracting labels")
 # labelsDict = featureExtractor.make_feature_matrix(videosData, videoLabels, smileLabels, leftEyeLabels, rightEyeLabels)
