@@ -214,16 +214,16 @@ testFeaturesPickle = open("ModelStorage/features_dict_test.pickle", "wb")
 
 valFeaturesPickle = open("ModelStorage/features_dict_val.pickle", "wb")
 
-print(len(featuresDictTrain))
-print(len(featuresDictTrain['hist']))
-print(len(featuresDictTest))
-print(len(featuresDictTest['hist']))
-print(len(featuresDictVal))
-print(len(featuresDictVal['hist']))
-
 pickle.dump(featuresDictTrain, trainFeaturesPickle)
 pickle.dump(featuresDictTest, testFeaturesPickle)
 pickle.dump(featuresDictVal, valFeaturesPickle)
+
+print(len(featuresDictTrain))
+print(len(featuresDictTrain['face']['hist']))
+print(len(featuresDictTest))
+print(len(featuresDictTest['face']['hist']))
+print(len(featuresDictVal))
+print(len(featuresDictVal['face']['hist']))
 #
 # print("Extracting labels")
 # labelsDict = featureExtractor.make_feature_matrix(videosData, videoLabels, smileLabels, leftEyeLabels, rightEyeLabels)
