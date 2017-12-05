@@ -126,9 +126,9 @@ class FeatureExtraction:
         conscientiousnessSmileValLabels = []
 
         folderLocation = 'ModelStorage/'
-        lefteye = 'lefteye_'
-        righteye = 'righteye_'
-        smile = 'smile_'
+        lefteyeloc = 'lefteye_'
+        righteyeloc = 'righteye_'
+        smileloc = 'smile_'
         label = 'label_'
 
         for facefile, facelabelfile in zip(faceTrainFileNames, faceTrainLabelFileNames):
@@ -139,25 +139,25 @@ class FeatureExtraction:
             print("Face label file {} opened".format(facelabelfile))
 
 
-            lefteyePickle = open(folderLocation + lefteye + facefile, "rb")
-            print("Left eye file {} openend".format(folderLocation + lefteye + facefile))
+            lefteyePickle = open(folderLocation + lefteyeloc + facefile, "rb")
+            print("Left eye file {} openend".format(folderLocation + lefteyeloc + facefile))
 
-            lefteyelabelPickle = open(folderLocation + lefteye + label + facefile, "rb")
-            print("Left eye label file {} openend".format(folderLocation + lefteye + label + facefile))
-
-
-            righteyePickle = open(folderLocation + righteye + facefile, "rb")
-            print("Right eye file {} openend".format(folderLocation + righteye + facefile))
-
-            righteyelabelPickle = open(folderLocation + righteye + label + facefile, "rb")
-            print("Right eye label file {} openend".format(folderLocation + righteye + label + facefile))
+            lefteyelabelPickle = open(folderLocation + lefteyeloc + label + facefile, "rb")
+            print("Left eye label file {} openend".format(folderLocation + lefteyeloc + label + facefile))
 
 
-            smilePickle = open(folderLocation + smile + facefile, "rb")
-            print("Smile file {} openend".format(folderLocation + smile + facefile))
+            righteyePickle = open(folderLocation + righteyeloc + facefile, "rb")
+            print("Right eye file {} openend".format(folderLocation + righteyeloc + facefile))
 
-            smilelabelPickle = open(folderLocation + smile + label + facefile, "rb")
-            print("Smile label file {} openend".format(folderLocation + smile + label + facefile))
+            righteyelabelPickle = open(folderLocation + righteyeloc + label + facefile, "rb")
+            print("Right eye label file {} openend".format(folderLocation + righteyeloc + label + facefile))
+
+
+            smilePickle = open(folderLocation + smileloc + facefile, "rb")
+            print("Smile file {} openend".format(folderLocation + smileloc + facefile))
+
+            smilelabelPickle = open(folderLocation + smileloc + label + facefile, "rb")
+            print("Smile label file {} openend".format(folderLocation + smileloc + label + facefile))
 
             facesData = pickle.load(facePickle)
             faceLabels = pickle.load(facelabelPickle)
@@ -207,7 +207,7 @@ class FeatureExtraction:
 
             for i, (rightEye, rightEyeLabel) in enumerate(zip(rightEyeData, rightEyeLabels)):
                 print("Feature extraction of righteye number: {}".format(i))
-                grayRightEye = cv2.cvtColor(righteye, cv2.COLOR_BGR2GRAY)
+                grayRightEye = cv2.cvtColor(rightEye, cv2.COLOR_BGR2GRAY)
                 rightEyeTrainHist.append(LBPGenerator.describe(grayRightEye))
 
                 extraversionRightEyeTrainLabels.append(TrainVideosData['extraversion'][rightEyeLabel])
@@ -224,23 +224,23 @@ class FeatureExtraction:
             facelabelPickle = open(folderLocation + facelabelfile, 'rb')
             print("Face label file {} opened".format(facelabelfile))
 
-            lefteyePickle = open(folderLocation + lefteye + facefile, "rb")
-            print("Left eye file {} openend".format(folderLocation + lefteye + facefile))
+            lefteyePickle = open(folderLocation + lefteyeloc + facefile, "rb")
+            print("Left eye file {} openend".format(folderLocation + lefteyeloc + facefile))
 
-            lefteyelabelPickle = open(folderLocation + lefteye + label + facefile, "rb")
-            print("Left eye label file {} openend".format(folderLocation + lefteye + label + facefile))
+            lefteyelabelPickle = open(folderLocation + lefteyeloc + label + facefile, "rb")
+            print("Left eye label file {} openend".format(folderLocation + lefteyeloc + label + facefile))
 
-            righteyePickle = open(folderLocation + righteye + facefile, "rb")
-            print("Right eye file {} openend".format(folderLocation + righteye + facefile))
+            righteyePickle = open(folderLocation + righteyeloc + facefile, "rb")
+            print("Right eye file {} openend".format(folderLocation + righteyeloc + facefile))
 
-            righteyelabelPickle = open(folderLocation + righteye + label + facefile, "rb")
-            print("Right eye label file {} openend".format(folderLocation + righteye + label + facefile))
+            righteyelabelPickle = open(folderLocation + righteyeloc + label + facefile, "rb")
+            print("Right eye label file {} openend".format(folderLocation + righteyeloc + label + facefile))
 
-            smilePickle = open(folderLocation + smile + facefile, "rb")
-            print("Smile file {} openend".format(folderLocation + smile + facefile))
+            smilePickle = open(folderLocation + smileloc + facefile, "rb")
+            print("Smile file {} openend".format(folderLocation + smileloc + facefile))
 
-            smilelabelPickle = open(folderLocation + smile + label + facefile, "rb")
-            print("Smile label file {} openend".format(folderLocation + smile + label + facefile))
+            smilelabelPickle = open(folderLocation + smileloc + label + facefile, "rb")
+            print("Smile label file {} openend".format(folderLocation + smileloc + label + facefile))
 
             facesData = pickle.load(facePickle)
             faceLabels = pickle.load(facelabelPickle)
@@ -289,7 +289,7 @@ class FeatureExtraction:
 
             for i, (rightEye, rightEyeLabel) in enumerate(zip(rightEyeData, rightEyeLabels)):
                 print("Feature extraction of righteye number: {}".format(i))
-                grayRightEye = cv2.cvtColor(righteye, cv2.COLOR_BGR2GRAY)
+                grayRightEye = cv2.cvtColor(rightEye, cv2.COLOR_BGR2GRAY)
                 rightEyeTestHist.append(LBPGenerator.describe(grayRightEye))
 
                 extraversionRightEyeTestLabels.append(TestVideosData['extraversion'][rightEyeLabel])
@@ -305,23 +305,23 @@ class FeatureExtraction:
             facelabelPickle = open(folderLocation + facelabelfile, 'rb')
             print("Face label file {} opened".format(facelabelfile))
 
-            lefteyePickle = open(folderLocation + lefteye + facefile, "rb")
-            print("Left eye file {} openend".format(folderLocation + lefteye + facefile))
+            lefteyePickle = open(folderLocation + lefteyeloc + facefile, "rb")
+            print("Left eye file {} openend".format(folderLocation + lefteyeloc + facefile))
 
-            lefteyelabelPickle = open(folderLocation + lefteye + label + facefile, "rb")
-            print("Left eye label file {} openend".format(folderLocation + lefteye + label + facefile))
+            lefteyelabelPickle = open(folderLocation + lefteyeloc + label + facefile, "rb")
+            print("Left eye label file {} openend".format(folderLocation + lefteyeloc + label + facefile))
 
-            righteyePickle = open(folderLocation + righteye + facefile, "rb")
-            print("Right eye file {} openend".format(folderLocation + righteye + facefile))
+            righteyePickle = open(folderLocation + righteyeloc + facefile, "rb")
+            print("Right eye file {} openend".format(folderLocation + righteyeloc + facefile))
 
-            righteyelabelPickle = open(folderLocation + righteye + label + facefile, "rb")
-            print("Right eye label file {} openend".format(folderLocation + righteye + label + facefile))
+            righteyelabelPickle = open(folderLocation + righteyeloc + label + facefile, "rb")
+            print("Right eye label file {} openend".format(folderLocation + righteyeloc + label + facefile))
 
-            smilePickle = open(folderLocation + smile + facefile, "rb")
-            print("Smile file {} openend".format(folderLocation + smile + facefile))
+            smilePickle = open(folderLocation + smileloc + facefile, "rb")
+            print("Smile file {} openend".format(folderLocation + smileloc + facefile))
 
-            smilelabelPickle = open(folderLocation + smile + label + facefile, "rb")
-            print("Smile label file {} openend".format(folderLocation + smile + label + facefile))
+            smilelabelPickle = open(folderLocation + smileloc + label + facefile, "rb")
+            print("Smile label file {} openend".format(folderLocation + smileloc + label + facefile))
 
             facesData = pickle.load(facePickle)
             faceLabels = pickle.load(facelabelPickle)
@@ -370,7 +370,7 @@ class FeatureExtraction:
 
             for i, (rightEye, rightEyeLabel) in enumerate(zip(rightEyeData, rightEyeLabels)):
                 print("Feature extraction of righteye number: {}".format(i))
-                grayRightEye = cv2.cvtColor(righteye, cv2.COLOR_BGR2GRAY)
+                grayRightEye = cv2.cvtColor(rightEye, cv2.COLOR_BGR2GRAY)
                 rightEyeValHist.append(LBPGenerator.describe(grayRightEye))
 
                 extraversionRightEyeValLabels.append(ValVideosData['extraversion'][rightEyeLabel])
