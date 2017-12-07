@@ -1,6 +1,7 @@
 import pickle
 
 import cv2
+import numpy as np
 from sklearn.svm import LinearSVR
 
 from VideoProcessing.localbinarypatterns import LocalBinaryPatterns
@@ -11,6 +12,7 @@ from ModelGeneration.kernelridgeregression import KernelRidgeModel
 from ModelGeneration.svmrbfmodel import RBFSVMModel
 from ModelGeneration.neuralnetworkmodel import NeuralNetworkModel
 from ModelGeneration.modeltester import ModeTester
+import matplotlib.pyplot as plt
 
 
 def test_accuracy(model, lData, rData, videoName, videosInfo):
@@ -95,10 +97,10 @@ def temp_loader(facesData, videoLabels):
 # Defining Variables
 
 # folder where the training videos are kept
-videosFilePath = 'ValidationVideos/'
+videosFilePath = 'TestVideos/'
 
 # loading the data of the training files
-videosDataFile = open("AnnotationFiles/annotation_validation.pkl", "rb")
+videosDataFile = open("AnnotationFiles/annotation_test.pkl", "rb")
 print('Loading data from pickle file.')
 videosData = pickle.load(videosDataFile, encoding='latin1')
 
@@ -201,29 +203,112 @@ print("done loading data")
 #
 #     pickle.dump(smileData, smilePickle)
 #     pickle.dump(smileVideoLabels, smilelabelPickle)
+#
 
-featureExtractor = FeatureExtraction(24, 8)
+#
+# featureExtractor = FeatureExtraction(24, 8)
+
+facesTestHistPickle = open("ModelStorage/faces_test_hist.pickle", "rb")
+smileTestHistPickle = open("ModelStorage/smile_test_hist.pickle", "rb")
+leftEyeTestHistPickle = open("ModelStorage/lefteye_test_hist.pickle", "rb")
+rightEyeTestHistPickle = open("ModelStorage/righteye_test_hist.pickle", "rb")
+#
+#  = featureExtractor.make_test_dict()
+
+facesTestHist = pickle.load(facesTestHistPickle)
+smileTestHist = pickle.load(smileTestHistPickle)
+leftEyeTestHist = pickle.load(leftEyeTestHistPickle)
+rightEyeTestHist = pickle.load(rightEyeTestHistPickle)
+
+featuresDictTrain = pickle.load(open("ModelStorage/features_dict_train.pickle", "rb"))
+
+nnetwork = NeuralNetworkModel(featuresDictTrain)
+
+hiddenlayer = [(9,), (9,9,), (9,9,9,)]
+
+
+opennessRMSE = []
+extraversionRMSE = []
+neuroticismRMSE = []
+conscientiousnessRMSE = []
+agreeablenessRMSE = []
+
+for layer in hiddenlayer:
+
+    print('Running for hiddenayer size: {}'.format(layer))
+    params = {
+        'hidden_layer_sizes': layer,
+        'activation': 'relu',
+        'solver': 'adam',
+        'learning_rate': 'constant'
+
+    }
+
+    nnetwork.generate(params)
+
+    ErrorDict = nnetwork.test(facesTestHist,smileTestHist, leftEyeTestHist, rightEyeTestHist, "nnetworktest.xlsx")
+
+    opennessRMSE.append(ErrorDict['openness'])
+    extraversionRMSE.append(ErrorDict['extraversion'])
+    agreeablenessRMSE.append(ErrorDict['agreeableness'])
+    conscientiousnessRMSE.append(ErrorDict['conscientiousness'])
+    neuroticismRMSE.append(ErrorDict['neuroticism'])
+
+
+
+x = np.array(range(len(opennessRMSE)))
+plt.xticks(x, ['1', '2', '3'])
+plt.xlabel('Hidden layers')
+plt.ylabel('RMSE for openness value')
+plt.plot(x, opennessRMSE)
+
+x = np.array(range(len(extraversionRMSE)))
+#plt.xticks(x, ['1', '2', '3', '4'])
+#plt.xlabel('Hidden layers')
+plt.plot(x, extraversionRMSE)
+
+x = np.array(range(len(conscientiousnessRMSE)))
+#plt.xticks(x, ['1', '2', '3', '4'])
+#plt.xlabel('Hidden layers')
+plt.plot(x, conscientiousnessRMSE)
+
+
+x = np.array(range(len(neuroticismRMSE)))
+#plt.xticks(x, ['1', '2', '3', '4'])
+#plt.xlabel('Hidden layers')
+plt.plot(x, neuroticismRMSE)
+
+
+x = np.array(range(len(agreeablenessRMSE)))
+#plt.xticks(x, ['1', '2', '3', '4'])
+#plt.xlabel('Hidden layers')
+plt.plot(x, agreeablenessRMSE)
+
+plt.ylim(0.13,0.15)
+plt.legend()
+
+plt.show()
 
 # print("Extracting features")
-featuresDictTrain, featuresDictTest, featuresDictVal = featureExtractor.extract_all()
+# trainFeaturesPickle = open("ModelStorage/features_dict_train.pickle", "rb")
+#
+# testFeaturesPickle = open("ModelStorage/features_dict_test.pickle", "rb")
+#
+# valFeaturesPickle = open("ModelStorage/features_dict_val.pickle", "rb")
 
 
-trainFeaturesPickle = open("ModelStorage/features_dict_train.pickle", "wb")
+# featuresDictTrain = pickle.load(trainFeaturesPickle)
+# featuresDictTest = pickle.load(testFeaturesPickle)
+# featuresDictVal = pickle.load(valFeaturesPickle)
+#
+# NeuralNetworkEvaluation = NeuralNetworkModel()
+#
+# NeuralNetworkEvaluation.find_best_params(featuresDictTrain, featuresDictTest)
 
-testFeaturesPickle = open("ModelStorage/features_dict_test.pickle", "wb")
+# pickle.dump(featuresDictTrain, trainFeaturesPickle)
+# pickle.dump(featuresDictTest, testFeaturesPickle)
+# pickle.dump(featuresDictVal, valFeaturesPickle)
 
-valFeaturesPickle = open("ModelStorage/features_dict_val.pickle", "wb")
-
-pickle.dump(featuresDictTrain, trainFeaturesPickle)
-pickle.dump(featuresDictTest, testFeaturesPickle)
-pickle.dump(featuresDictVal, valFeaturesPickle)
-
-print(len(featuresDictTrain))
-print(len(featuresDictTrain['face']['hist']))
-print(len(featuresDictTest))
-print(len(featuresDictTest['face']['hist']))
-print(len(featuresDictVal))
-print(len(featuresDictVal['face']['hist']))
 #
 # print("Extracting labels")
 # labelsDict = featureExtractor.make_feature_matrix(videosData, videoLabels, smileLabels, leftEyeLabels, rightEyeLabels)
