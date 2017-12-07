@@ -224,7 +224,7 @@ featuresDictTrain = pickle.load(open("ModelStorage/features_dict_train.pickle", 
 
 nnetwork = NeuralNetworkModel(featuresDictTrain)
 
-hiddenlayer = [(9,), (9,9,), (9,9,9,)]
+activationFunctions = ['identity','logistic','tanh', 'relu']
 
 
 opennessRMSE = []
@@ -233,12 +233,12 @@ neuroticismRMSE = []
 conscientiousnessRMSE = []
 agreeablenessRMSE = []
 
-for layer in hiddenlayer:
+for function in activationFunctions:
 
-    print('Running for hiddenayer size: {}'.format(layer))
+    print('Running for hiddenayer size: {}'.format(function))
     params = {
-        'hidden_layer_sizes': layer,
-        'activation': 'relu',
+        'hidden_layer_sizes': (9,),
+        'activation': function,
         'solver': 'adam',
         'learning_rate': 'constant'
 
@@ -255,37 +255,47 @@ for layer in hiddenlayer:
     neuroticismRMSE.append(ErrorDict['neuroticism'])
 
 
-
 x = np.array(range(len(opennessRMSE)))
-plt.xticks(x, ['1', '2', '3'])
-plt.xlabel('Hidden layers')
-plt.ylabel('RMSE for openness value')
-plt.plot(x, opennessRMSE)
+xaxis_label = 'Activation Function'
 
-x = np.array(range(len(extraversionRMSE)))
-#plt.xticks(x, ['1', '2', '3', '4'])
-#plt.xlabel('Hidden layers')
-plt.plot(x, extraversionRMSE)
+xlabels = activationFunctions
 
-x = np.array(range(len(conscientiousnessRMSE)))
-#plt.xticks(x, ['1', '2', '3', '4'])
-#plt.xlabel('Hidden layers')
-plt.plot(x, conscientiousnessRMSE)
+ax1 = plt.subplot2grid(shape=(3,7), loc=(0,0), colspan=3)
+ax2 = plt.subplot2grid((3,7), (0,4), colspan=3)
+ax3 = plt.subplot2grid((3,7), (1,0), colspan=3)
+ax4 = plt.subplot2grid((3,7), (1,4), colspan=3)
+ax5 = plt.subplot2grid((3,7), (2,2), colspan=3)
 
+ax1.set_xlabel(xaxis_label)
+ax1.set_xticks(np.arange(len(xlabels)))
+ax1.set_xticklabels(xlabels)
+ax1.set_ylabel('Openness')
+ax1.plot(x, opennessRMSE)
 
-x = np.array(range(len(neuroticismRMSE)))
-#plt.xticks(x, ['1', '2', '3', '4'])
-#plt.xlabel('Hidden layers')
-plt.plot(x, neuroticismRMSE)
+ax2.set_xlabel(xaxis_label)
+ax2.set_ylabel('Extraversion')
+ax2.set_xticks(np.arange(len(xlabels)))
+ax2.set_xticklabels(xlabels)
+ax2.plot(x, extraversionRMSE)
 
+ax3.set_xlabel(xaxis_label)
+ax3.set_ylabel('Conscientiousness')
+ax3.set_xticks(np.arange(len(xlabels)))
+ax3.set_xticklabels(xlabels)
+ax3.plot(x, conscientiousnessRMSE)
 
-x = np.array(range(len(agreeablenessRMSE)))
-#plt.xticks(x, ['1', '2', '3', '4'])
-#plt.xlabel('Hidden layers')
-plt.plot(x, agreeablenessRMSE)
+ax4.set_xlabel(xaxis_label)
+ax4.set_ylabel('Neuroticism')
+ax4.set_xticks(np.arange(len(xlabels)))
+ax4.set_xticklabels(xlabels)
+ax4.plot(x, neuroticismRMSE)
 
-plt.ylim(0.13,0.15)
-plt.legend()
+ax5.set_xlabel(xaxis_label)
+ax5.set_ylabel('Agreeableness')
+ax5.set_xticks(np.arange(len(xlabels)))
+ax5.set_xticklabels(xlabels)
+ax5.plot(x, agreeablenessRMSE)
+plt.tight_layout()
 
 plt.show()
 
