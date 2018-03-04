@@ -389,11 +389,17 @@ class NeuralNetworkModel:
             agreeablenessListSmile = self.modelDict['smile']['agreeableness'].predict(featuresDict['smile'])
             conscientiousnessListSmile = self.modelDict['smile']['conscientiousness'].predict(featuresDict['smile'])
 
-        openness = -1
-        extraversion = -1
-        neuroticism = -1
-        conscientiousness = -1
-        agreeableness = -1
+        openness = defaultdict(float)
+        extraversion = defaultdict(float)
+        neuroticism = defaultdict(float)
+        conscientiousness = defaultdict(float)
+        agreeableness = defaultdict(float)
+
+        openness["average"] = -1
+        extraversion["average"] = -1
+        neuroticism["average"] = -1
+        conscientiousness["average"] = -1
+        agreeableness["average"] = -1
 
         opennessList = None
         agreeablenessList = None
@@ -401,29 +407,39 @@ class NeuralNetworkModel:
         extraversionList = None
         neuroticismList = None
 
-        if opennessListFace and opennessListRightEye and opennessListLeftEye and opennessListSmile:
+        if opennessListFace or opennessListRightEye or opennessListLeftEye or opennessListSmile:
             opennessList = np.concatenate(
                 (opennessListFace, opennessListLeftEye, opennessListRightEye, opennessListSmile))
-            openness = sum(opennessList) / len(opennessList)
+            openness["average"] = np.average(opennessList)
+            openness["min"] = np.min(opennessList)
+            openness["max"] = np.max(opennessList)
 
         if extraversionListFace or extraversionListLeftEye or extraversionListRightEye or extraversionListSmile:
             extraversionList = np.concatenate(
                 (extraversionListFace, extraversionListLeftEye, extraversionListRightEye, extraversionListSmile))
-            extraversion = sum(extraversionList) / len(extraversionList)
+            extraversion["average"] = np.average(extraversionList)
+            extraversion["min"] = np.min(extraversionList)
+            extraversion["max"] = np.max(extraversionList)
 
         if neuroticismListFace or neuroticismListLeftEye or neuroticismListRightEye or neuroticismListSmile:
             neuroticismList = np.concatenate(
                 (neuroticismListFace, neuroticismListLeftEye, neuroticismListRightEye, neuroticismListSmile))
-            neuroticism = sum(neuroticismList) / len(neuroticismList)
+            neuroticism["average"] = np.average(neuroticismList)
+            neuroticism["min"] = np.min(neuroticismList)
+            neuroticism["max"] = np.max(neuroticismList)
 
         if agreeablenessListFace or agreeablenessListLeftEye or agreeablenessListRightEye or agreeablenessListLeftEye or agreeablenessListSmile:
             agreeablenessList = np.concatenate(
                 (agreeablenessListFace, agreeablenessListLeftEye, agreeablenessListRightEye, agreeablenessListSmile))
-            agreeableness = sum(agreeablenessList) / len(agreeablenessList)
+            agreeableness["average"] = np.average(agreeablenessList)
+            agreeableness["min"] = np.min(agreeablenessList)
+            agreeableness["max"] = np.max(agreeablenessList)
 
         if conscientiousnessListFace or conscientiousnessListLeftEye or conscientiousnessListRightEye or conscientiousnessListSmile:
             conscientiousnessList = np.concatenate((conscientiousnessListFace, conscientiousnessListLeftEye,
                                                     conscientiousnessListRightEye, conscientiousnessListSmile))
-            conscientiousness = sum(conscientiousnessList) / len(conscientiousnessList)
+            conscientiousness["average"] = np.average(conscientiousnessList)
+            conscientiousness["min"] = np.min(conscientiousnessList)
+            conscientiousness["max"] = np.max(conscientiousnessList)
 
         return openness, extraversion, neuroticism, agreeableness, conscientiousness

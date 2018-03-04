@@ -208,96 +208,109 @@ print("done loading data")
 #
 # featureExtractor = FeatureExtraction(24, 8)
 
-facesTestHistPickle = open("ModelStorage/faces_test_hist.pickle", "rb")
-smileTestHistPickle = open("ModelStorage/smile_test_hist.pickle", "rb")
-leftEyeTestHistPickle = open("ModelStorage/lefteye_test_hist.pickle", "rb")
-rightEyeTestHistPickle = open("ModelStorage/righteye_test_hist.pickle", "rb")
+# facesTestHistPickle = open("ModelStorage/faces_test_hist.pickle", "rb")
+# smileTestHistPickle = open("ModelStorage/smile_test_hist.pickle", "rb")
+# leftEyeTestHistPickle = open("ModelStorage/lefteye_test_hist.pickle", "rb")
+# rightEyeTestHistPickle = open("ModelStorage/righteye_test_hist.pickle", "rb")
 #
 #  = featureExtractor.make_test_dict()
 
-facesTestHist = pickle.load(facesTestHistPickle)
-smileTestHist = pickle.load(smileTestHistPickle)
-leftEyeTestHist = pickle.load(leftEyeTestHistPickle)
-rightEyeTestHist = pickle.load(rightEyeTestHistPickle)
+# facesTestHist = pickle.load(facesTestHistPickle)
+# smileTestHist = pickle.load(smileTestHistPickle)
+# leftEyeTestHist = pickle.load(leftEyeTestHistPickle)
+# rightEyeTestHist = pickle.load(rightEyeTestHistPickle)
 
 featuresDictTrain = pickle.load(open("ModelStorage/features_dict_train.pickle", "rb"))
 
 nnetwork = NeuralNetworkModel(featuresDictTrain)
+#
+# neurons = [0.0001, 0.001, 0.01, 0.1, 1]
 
-activationFunctions = ['identity','logistic','tanh', 'relu']
+# for neuron in neurons:
+#
+#     print('Running for hiddenayer size: {}'.format(neuron)
+params = {
+    'hidden_layer_sizes': (190, 190, 190, 190,),
+    'activation': 'relu',
+    'solver': 'adam',
+    'learning_rate': 'adaptive',
+    'alpha': 0.00001
+}
 
+NNModelDict = nnetwork.generate(params)
 
-opennessRMSE = []
-extraversionRMSE = []
-neuroticismRMSE = []
-conscientiousnessRMSE = []
-agreeablenessRMSE = []
+neuralNetworkModelPickle = open("ModelStorage/nnlivetest.pickle", "wb")
 
-for function in activationFunctions:
+pickle.dump(NNModelDict, neuralNetworkModelPickle)
 
-    print('Running for hiddenayer size: {}'.format(function))
-    params = {
-        'hidden_layer_sizes': (9,),
-        'activation': function,
-        'solver': 'adam',
-        'learning_rate': 'constant'
+#
+# ErrorDict = nnetwork.test(facesTestHist, smileTestHist, leftEyeTestHist, rightEyeTestHist, "nnetworktest.xlsx")
+#
+# opennessRMSE = ErrorDict['openness']
+# extraversionRMSE = ErrorDict['extraversion']
+# agreeablenessRMSE = ErrorDict['agreeableness']
+# conscientiousnessRMSE = ErrorDict['conscientiousness']
+# neuroticismRMSE = ErrorDict['neuroticism']
+#
+# print(opennessRMSE)
+# print(agreeablenessRMSE)
+# print(neuroticismRMSE)
+# print(conscientiousnessRMSE)
+# print(extraversionRMSE)
 
-    }
+#
+# x = np.array(range(len(opennessRMSE)))
+#
+# xaxis_label = 'Alpha Value'
+#
+# xlabels = [0.0001, 0.001, 0.01, 0.1, 1.0]
+#
+# ticks = [0.0001, 0.001, 0.01, 0.1, 1.0]
+#
+# ax1 = plt.subplot2grid(shape=(3,10), loc=(0,0), colspan=5)
+# ax2 = plt.subplot2grid((3,10), (0,5), colspan=5)
+# ax3 = plt.subplot2grid((3,10), (1,0), colspan=5)
+# ax4 = plt.subplot2grid((3,10), (1,5), colspan=5)
+# ax5 = plt.subplot2grid((3,10), (2,2), colspan=5)
+#
+# ax1.set_xlabel(xaxis_label, fontsize=10)
+# ax1.set_ylabel('RMSE')
+# ax1.set_title('Openness')
+# ax1.plot(x, opennessRMSE)
+# ax1.set_xticks(range(len(x)))
+# ax1.set_xticklabels(xlabels)
+#
+# ax2.set_xlabel(xaxis_label, fontsize=10)
+# ax2.set_title('Extraversion')
+# ax2.set_ylabel('RMSE')
+# ax2.plot(x, extraversionRMSE)
+# ax2.set_xticks(range(len(x)))
+# ax2.set_xticklabels(xlabels)
+#
+# ax3.set_xlabel(xaxis_label, fontsize=10)
+# ax3.set_title('Conscientiousness')
+# ax3.set_ylabel('RMSE')
+# ax3.plot(x, conscientiousnessRMSE)
+# ax3.set_xticks(range(len(x)))
+# ax3.set_xticklabels(xlabels)
+#
+# ax4.set_xlabel(xaxis_label, fontsize=10)
+# ax4.set_title('Neuroticism')
+# ax4.set_ylabel('RMSE')
+# ax4.plot(x, neuroticismRMSE)
+# ax4.set_xticks(range(len(x)))
+# ax4.set_xticklabels(xlabels)
+#
+# ax5.set_xlabel(xaxis_label, fontsize=10)
+# ax5.set_title('Agreeableness')
+# ax5.set_ylabel('RMSE')
+# ax5.plot(x, agreeablenessRMSE)
+# ax5.set_xticks(range(len(x)))
+# ax5.set_xticklabels(xlabels)
 
-    nnetwork.generate(params)
-
-    ErrorDict = nnetwork.test(facesTestHist,smileTestHist, leftEyeTestHist, rightEyeTestHist, "nnetworktest.xlsx")
-
-    opennessRMSE.append(ErrorDict['openness'])
-    extraversionRMSE.append(ErrorDict['extraversion'])
-    agreeablenessRMSE.append(ErrorDict['agreeableness'])
-    conscientiousnessRMSE.append(ErrorDict['conscientiousness'])
-    neuroticismRMSE.append(ErrorDict['neuroticism'])
-
-
-x = np.array(range(len(opennessRMSE)))
-xaxis_label = 'Activation Function'
-
-xlabels = activationFunctions
-
-ax1 = plt.subplot2grid(shape=(3,7), loc=(0,0), colspan=3)
-ax2 = plt.subplot2grid((3,7), (0,4), colspan=3)
-ax3 = plt.subplot2grid((3,7), (1,0), colspan=3)
-ax4 = plt.subplot2grid((3,7), (1,4), colspan=3)
-ax5 = plt.subplot2grid((3,7), (2,2), colspan=3)
-
-ax1.set_xlabel(xaxis_label)
-ax1.set_xticks(np.arange(len(xlabels)))
-ax1.set_xticklabels(xlabels)
-ax1.set_ylabel('Openness')
-ax1.plot(x, opennessRMSE)
-
-ax2.set_xlabel(xaxis_label)
-ax2.set_ylabel('Extraversion')
-ax2.set_xticks(np.arange(len(xlabels)))
-ax2.set_xticklabels(xlabels)
-ax2.plot(x, extraversionRMSE)
-
-ax3.set_xlabel(xaxis_label)
-ax3.set_ylabel('Conscientiousness')
-ax3.set_xticks(np.arange(len(xlabels)))
-ax3.set_xticklabels(xlabels)
-ax3.plot(x, conscientiousnessRMSE)
-
-ax4.set_xlabel(xaxis_label)
-ax4.set_ylabel('Neuroticism')
-ax4.set_xticks(np.arange(len(xlabels)))
-ax4.set_xticklabels(xlabels)
-ax4.plot(x, neuroticismRMSE)
-
-ax5.set_xlabel(xaxis_label)
-ax5.set_ylabel('Agreeableness')
-ax5.set_xticks(np.arange(len(xlabels)))
-ax5.set_xticklabels(xlabels)
-ax5.plot(x, agreeablenessRMSE)
-plt.tight_layout()
-
-plt.show()
+# plt.tight_layout()
+#
+# plt.show()
 
 # print("Extracting features")
 # trainFeaturesPickle = open("ModelStorage/features_dict_train.pickle", "rb")
